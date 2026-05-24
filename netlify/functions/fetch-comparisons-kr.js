@@ -11,13 +11,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 const RSS_FEEDS = {
   conservative: [
     { name: '조선일보', url: 'https://www.chosun.com/arc/outboundfeeds/rss/category/politics/?outputType=xml' },
-    { name: '조선일보', url: 'https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml' },
-    { name: '동아일보', url: 'https://rss.donga.com/total.xml' },
   ],
   liberal: [
     { name: '한겨레', url: 'https://www.hani.co.kr/rss/' },
     { name: '경향신문', url: 'https://www.khan.co.kr/rss/rssdata/total_news.xml' },
-    { name: '경향신문', url: 'https://www.khan.co.kr/rss/rssdata/kh_politics.xml' },
   ]
 };
 
@@ -142,7 +139,7 @@ exports.handler = async function(event, context) {
     const usedLibArticles = new Set();
 
     for (const conFeed of RSS_FEEDS.conservative) {
-      if (saved.length >= 3) break;
+      if (saved.length >= 1) break;
 
       const conArticles = await fetchRSS(conFeed.url, conFeed.name);
       if (!conArticles.length) continue;
