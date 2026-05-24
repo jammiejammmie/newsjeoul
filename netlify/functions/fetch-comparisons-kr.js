@@ -129,46 +129,61 @@ exports.handler = async function(event, context) {
     }
 
     const saved = [];
+    // 각 보수 신문의 기사를 한 번씩만 사용
+    const usedConArticles = new Set();
+    const usedLibArticles = new Set();
 
     for (const conFeed of RSS_FEEDS.conservative) {
       if (saved.length >= 3) break;
+
+      const conArticles = await fetchRSS(conFeed.url, conFeed.name);
+      if (!conArticles.length) continue;
+
+      // 이 보수 신문에서 첫 번째 기사만 시도
+      const conArticle = conArticles[0];
+      const conKey = conFeed.name + conArticle.title.substring(0,20);
+      if (usedConArticles.has(conKey)) continue;
+
+      // 진보 신문 중 매칭되는 것 찾기
+      let matched = false;
       for (const libFeed of RSS_FEEDS.liberal) {
-        if (saved.length >= 3) break;
+        if (matched || saved.length >= 3) break;
 
-        const [conArticles, libArticles] = await Promise.all([
-          fetchRSS(conFeed.url, conFeed.name),
-          fetchRSS(libFeed.url, libFeed.name)
-        ]);
+        const libArticles = await fetchRSS(libFeed.url, libFeed.name);
+        if (!libArticles.length) continue;
 
-        if (!conArticles.length || !libArticles.length) continue;
+        for (let j = 0; j < Math.min(libArticles.length, 3) && !matched; j++) {
+          const libKey = libFeed.name + libArticles[j].title.substring(0,20);
+          if (usedLibArticles.has(libKey)) continue;
 
-        for (let i = 0; i < Math.min(conArticles.length, 3) && saved.length < 3; i++) {
-          for (let j = 0; j < Math.min(libArticles.length, 3) && saved.length < 3; j++) {
-            try {
-              console.log(`비교: "${conArticles[i].title.substring(0,30)}" vs "${libArticles[j].title.substring(0,30)}"`);
-              const analysis = await analyzeWithClaude(conArticles[i], libArticles[j], conFeed.name, libFeed.name);
+          try {
+            console.log(`비교: "${conArticle.title.substring(0,30)}" (${conFeed.name}) vs "${libArticles[j].title.substring(0,30)}" (${libFeed.name})`);
+            const analysis = await analyzeWithClaude(conArticle, libArticles[j], conFeed.name, libFeed.name);
 
-              if (analysis && analysis.same_topic) {
-                console.log('매칭 발견:', analysis.topic);
-                const { error } = await supabase.from('comparisons_kr').insert({
-                  topic: analysis.topic,
-                  category: analysis.category,
-                  conservative_source: conFeed.name,
-                  conservative_summary: analysis.conservative_summary,
-                  conservative_url: conArticles[i].link,
-                  liberal_source: libFeed.name,
-                  liberal_summary: analysis.liberal_summary,
-                  liberal_url: libArticles[j].link,
-                  ai_analysis: analysis.ai_analysis,
-                  election_related: analysis.election_related || false
-                });
-                if (!error) { saved.push(analysis.topic); break; }
-                else console.error('Supabase 오류:', error.message);
-              }
-              await new Promise(r => setTimeout(r, 100));
-            } catch(e) {
-              console.error('분석 오류:', e.message);
+            if (analysis && analysis.same_topic) {
+              console.log('매칭 발견:', analysis.topic);
+              const { error } = await supabase.from('comparisons_kr').insert({
+                topic: analysis.topic,
+                category: analysis.category,
+                conservative_source: conFeed.name,
+                conservative_summary: analysis.conservative_summary,
+                conservative_url: conArticle.link,
+                liberal_source: libFeed.name,
+                liberal_summary: analysis.liberal_summary,
+                liberal_url: libArticles[j].link,
+                ai_analysis: analysis.ai_analysis,
+                election_related: analysis.election_related || false
+              });
+              if (!error) {
+                saved.push(analysis.topic);
+                usedConArticles.add(conKey);
+                usedLibArticles.add(libKey);
+                matched = true;
+              } else console.error('Supabase 오류:', error.message);
             }
+            await new Promise(r => setTimeout(r, 100));
+          } catch(e) {
+            console.error('분석 오류:', e.message);
           }
         }
       }

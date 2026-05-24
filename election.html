@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +9,28 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080808;--bg2:#101010;--card:#141414;--card2:#1a1a1a;
-  --border:#1e1e1e;--border2:#2a2a2a;
-  --con:#e63946;--lib:#2563eb;
-  --con-soft:rgba(230,57,70,.08);--lib-soft:rgba(37,99,235,.08);
-  --con-glow:rgba(230,57,70,.15);--lib-glow:rgba(37,99,235,.15);
-  --gold:#f59e0b;--green:#10b981;--purple:#8b5cf6;
-  --text:#f0f0e8;--text2:#b8b8b0;--muted:#555;--muted2:#333;
+  --bg:#faf8f3;--bg2:#f2efe8;--card:#ffffff;--card2:#f7f5f0;
+  --border:#e4dfd4;--border2:#d4cec3;
+  --con:#a83225;--lib:#1a4f8c;
+  --con-soft:rgba(168,50,37,.06);--lib-soft:rgba(26,79,140,.06);
+  --con-glow:rgba(168,50,37,.11);--lib-glow:rgba(26,79,140,.11);
+  --gold:#b07d2a;--green:#2a7d4f;--purple:#5e3ea1;
+  --text:#1c1a16;--text2:#3d3a34;--muted:#7a756c;--muted2:#c8c3bb;
 }
-[data-theme="light"]{
-  --bg:#f5f4ef;--bg2:#eeede8;--card:#fff;--card2:#f9f8f4;
-  --border:#e0dfd8;--border2:#ccc;
-  --con:#c0392b;--lib:#1d4ed8;
-  --con-soft:rgba(192,57,43,.06);--lib-soft:rgba(29,78,216,.06);
-  --con-glow:rgba(192,57,43,.12);--lib-glow:rgba(29,78,216,.12);
-  --text:#1a1a14;--text2:#444;--muted:#888;--muted2:#ccc;
+[data-theme="dark"]{
+  --bg:#0e0d0b;--bg2:#161410;--card:#1c1a16;--card2:#232018;
+  --border:#2a2720;--border2:#363028;
+  --con:#c0392b;--lib:#2563eb;
+  --con-soft:rgba(192,57,43,.08);--lib-soft:rgba(37,99,235,.08);
+  --con-glow:rgba(192,57,43,.15);--lib-glow:rgba(37,99,235,.15);
+  --gold:#d97706;--green:#059669;--purple:#7c3aed;
+  --text:#f0ece4;--text2:#b8b2a8;--muted:#6a6560;--muted2:#3a3630;
 }
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;font-size:15px;padding-bottom:60px}
 
 /* NAV */
-.nav{background:rgba(8,8,8,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:14px}
-[data-theme="light"] .nav{background:rgba(245,244,239,.96)}
+.nav{background:rgba(250,248,243,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:14px}
+[data-theme="dark"] .nav{background:rgba(14,13,11,.97)}
 .nav-logo{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--text);text-decoration:none}
 .nav-logo .c{color:var(--con)}
 .nav-logo .l{color:var(--lib)}
@@ -533,9 +534,67 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   </div>
 </div>
 
+
+<!-- 선거 뉴스 비교 피드 -->
+<div class="bias-section" id="electionFeedSection">
+  <div class="section-title">📰 오늘의 선거 보도 비교</div>
+  <div id="electionFeed" style="display:flex;flex-direction:column;gap:12px">
+    <div style="text-align:center;padding:30px;color:var(--muted);font-size:14px">불러오는 중...</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+
+// ── SUPABASE ──
+const SUPA_URL = 'https://xlxztrnpmzklbnyfkrze.supabase.co';
+const SUPA_KEY = 'sb_publishable_RYLor2fbXqj4aHhSW0vCsw_7ZfP2a58';
+
+function timeAgo(ts) {
+  const d = (Date.now() - new Date(ts)) / 1000;
+  if(d<60) return '방금'; if(d<3600) return Math.floor(d/60)+'분 전';
+  if(d<86400) return Math.floor(d/3600)+'시간 전'; return Math.floor(d/86400)+'일 전';
+}
+
+async function loadElectionFeed() {
+  try {
+    const r = await fetch(SUPA_URL + '/rest/v1/comparisons_kr?election_related=eq.true&order=created_at.desc&limit=10', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await r.json();
+    const feed = document.getElementById('electionFeed');
+    if (!data || !data.length) {
+      feed.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px">선거 관련 비교 데이터를 수집 중입니다.</div>';
+      return;
+    }
+    feed.innerHTML = data.map((c, i) => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeIn .3s ease both;animation-delay:${i*.06}s">
+        <div style="padding:16px 20px 10px">
+          <div style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:8px">${c.topic}</div>
+          <div style="font-size:10px;color:var(--muted)">${c.created_at?timeAgo(c.created_at):'오늘'}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr">
+          <div style="padding:14px 18px;background:var(--con-soft);border-top:1px solid var(--border)">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--con);margin-bottom:6px">${c.conservative_source||'보수 언론'}</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:8px">${c.conservative_summary||''}</div>
+            ${c.conservative_url?`<a href="${c.conservative_url}" target="_blank" style="font-size:11px;color:var(--muted);text-decoration:none">원문 보기 →</a>`:''}
+          </div>
+          <div style="padding:14px 18px;background:var(--lib-soft);border-top:1px solid var(--border);border-left:1px solid var(--border)">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lib);margin-bottom:6px">${c.liberal_source||'진보 언론'}</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:8px">${c.liberal_summary||''}</div>
+            ${c.liberal_url?`<a href="${c.liberal_url}" target="_blank" style="font-size:11px;color:var(--muted);text-decoration:none">원문 보기 →</a>`:''}
+          </div>
+        </div>
+        ${c.ai_analysis?`<div style="padding:12px 18px;border-top:1px solid var(--border);background:rgba(94,62,161,.04)"><span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple)">✦ AI 분석</span><div style="font-size:13px;color:var(--text2);line-height:1.75;margin-top:4px">${c.ai_analysis}</div></div>`:''}
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('electionFeed').innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">데이터 로드 실패</div>';
+  }
+}
+
+loadElectionFeed();
+
 // THEME
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme');
@@ -544,7 +603,7 @@ function toggleTheme() {
   localStorage.setItem('nj_theme', next);
   document.getElementById('themeBtn').textContent = next==='dark'?'☀️':'🌙';
 }
-const t = localStorage.getItem('nj_theme')||'dark';
+const t = localStorage.getItem('nj_theme')||'light';
 document.documentElement.setAttribute('data-theme', t);
 document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙';
 

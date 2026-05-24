@@ -714,10 +714,12 @@ function showTodayHero(c) {
       <div class="today-side con-side">
         <div class="today-outlet con">${c.conservative_source||'조선일보'}</div>
         <div class="today-text">${(c.conservative_summary||'').substring(0,150)}...</div>
+        ${c.conservative_url?`<a href="${c.conservative_url}" target="_blank" class="side-link" style="margin-top:8px;display:inline-flex">원문 보기 →</a>`:''}
       </div>
       <div class="today-side lib-side">
         <div class="today-outlet lib">${c.liberal_source||'한겨레'}</div>
         <div class="today-text">${(c.liberal_summary||'').substring(0,150)}...</div>
+        ${c.liberal_url?`<a href="${c.liberal_url}" target="_blank" class="side-link" style="margin-top:8px;display:inline-flex">원문 보기 →</a>`:''}
       </div>
     </div>
     ${c.ai_analysis?`<div class="today-footer"><div class="today-ai-label">✦ AI 분석</div><div class="today-ai-text">${c.ai_analysis}</div></div>`:''}
@@ -811,21 +813,31 @@ function copyBattle() {
 }
 
 // ── PAGE NAVIGATION ──
-function showMain() {
+function showMain(pushState=true) {
   document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('show'));
   document.getElementById('mainContent').style.display='';
   document.getElementById('heroSection').style.display='';
   document.getElementById('routineBar').style.display='';
+  if (pushState) history.pushState({page:'main'}, '', '/');
+  window.scrollTo(0,0);
 }
-function showPage(page) {
+function showPage(page, pushState=true) {
   document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('show'));
   document.getElementById('mainContent').style.display='none';
   document.getElementById('heroSection').style.display='none';
   document.getElementById('routineBar').style.display='none';
   const map = {election:'electionPage',poll:'pollPage',youtube:'youtubePage',media101:'media101Page'};
   if (map[page]) document.getElementById(map[page]).classList.add('show');
+  if (pushState) history.pushState({page:page}, '', '#'+page);
   window.scrollTo(0,0);
 }
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.page && e.state.page !== 'main') {
+    showPage(e.state.page, false);
+  } else {
+    showMain(false);
+  }
+});
 function showMore() { showToast('더 많은 비교는 준비 중입니다!'); }
 
 // ── QUIZ ──
