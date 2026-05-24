@@ -625,7 +625,7 @@ function timeAgo(ts) {
 
 // ── THEME ──
 function initTheme() {
-  const t = localStorage.getItem('nj_theme') || 'dark';
+  const t = localStorage.getItem('nj_theme') || 'light';
   document.documentElement.setAttribute('data-theme', t);
   document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙';
 }
