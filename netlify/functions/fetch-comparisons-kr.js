@@ -11,15 +11,23 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 const RSS_FEEDS = {
   conservative: [
     { name: '조선일보', url: 'https://www.chosun.com/arc/outboundfeeds/rss/category/politics/?outputType=xml' },
-    { name: '중앙일보', url: 'https://rss.joins.com/joins_news_list.xml' },
-    { name: '동아일보', url: 'https://rss.donga.com/politics.xml' },
+    { name: '조선일보', url: 'https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml' },
+    { name: '동아일보', url: 'https://rss.donga.com/total.xml' },
   ],
   liberal: [
     { name: '한겨레', url: 'https://www.hani.co.kr/rss/' },
     { name: '경향신문', url: 'https://www.khan.co.kr/rss/rssdata/total_news.xml' },
-    { name: '오마이뉴스', url: 'https://rss.ohmynews.com/ohmynews/politics.xml' },
+    { name: '경향신문', url: 'https://www.khan.co.kr/rss/rssdata/kh_politics.xml' },
   ]
 };
+
+// 정치 관련 키워드
+const POLITICS_KEYWORDS = ['대통령', '국회', '정부', '여당', '야당', '민주당', '국민의힘', '선거', '장관', '총리', '정책', '법안', '의원', '외교', '안보', '경제', '복지', '세금', '예산', '개혁', '탄핵', '지지율', '여론'];
+
+function isPolitical(title, desc) {
+  const text = (title + ' ' + desc).toLowerCase();
+  return POLITICS_KEYWORDS.some(kw => text.includes(kw));
+}
 
 async function fetchRSS(url, sourceName) {
   try {
@@ -140,7 +148,8 @@ exports.handler = async function(event, context) {
       if (!conArticles.length) continue;
 
       // 이 보수 신문에서 첫 번째 기사만 시도
-      const conArticle = conArticles[0];
+      // 정치 관련 기사 우선 선택
+      const conArticle = conArticles.find(a => isPolitical(a.title, a.description)) || conArticles[0];
       const conKey = conFeed.name + conArticle.title.substring(0,20);
       if (usedConArticles.has(conKey)) continue;
 
