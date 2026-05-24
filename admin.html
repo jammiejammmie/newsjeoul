@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>뉴스저울 — 어드민</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.wrap{width:100%;max-width:520px}
+.logo{font-size:24px;font-weight:700;margin-bottom:4px}
+.logo .c{color:#a83225}
+.logo .l{color:#1a4f8c}
+.subtitle{font-size:12px;color:#7a756c;margin-bottom:28px}
+#loginSection{background:#fff;border:1px solid #e4dfd4;border-radius:16px;padding:24px}
+.login-title{font-size:14px;font-weight:600;color:#7a756c;margin-bottom:16px}
+.input-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7a756c;margin-bottom:6px;display:block}
+.input-field{width:100%;padding:11px 13px;background:#faf8f3;border:1px solid #e4dfd4;border-radius:10px;color:#1c1a16;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .15s;margin-bottom:12px}
+.input-field:focus{border-color:#a83225}
+.login-btn{width:100%;padding:12px;background:#a83225;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s}
+.login-btn:hover{opacity:.85}
+#dashboard{display:none}
+.welcome{font-size:13px;color:#7a756c;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.logout-btn{background:none;border:none;color:#c8c3bb;font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{background:#fff;border:1px solid #e4dfd4;border-radius:12px;padding:14px}
+.stat-val{font-size:28px;font-weight:700;color:#1c1a16;line-height:1;margin-bottom:4px}
+.stat-label{font-size:11px;color:#7a756c}
+.action-card{background:#fff;border:1px solid #e4dfd4;border-radius:16px;padding:20px;margin-bottom:10px}
+.action-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.action-icon{font-size:26px}
+.action-info h3{font-size:14px;font-weight:600;color:#1c1a16;margin-bottom:3px}
+.action-info p{font-size:12px;color:#7a756c;line-height:1.5}
+.action-schedule{font-size:10px;font-weight:600;letter-spacing:.06em;padding:3px 9px;background:#f2efe8;border:1px solid #e4dfd4;border-radius:999px;color:#7a756c;white-space:nowrap;margin-left:auto}
+.run-btn{width:100%;padding:11px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.run-btn.compare{background:linear-gradient(135deg,rgba(168,50,37,.08),rgba(26,79,140,.08));border:1px solid #e4dfd4;color:#1c1a16}
+.run-btn.compare:hover{background:linear-gradient(135deg,rgba(168,50,37,.14),rgba(26,79,140,.14))}
+.run-btn.election{background:rgba(176,125,42,.08);border:1px solid rgba(176,125,42,.2);color:#b07d2a}
+.run-btn.election:hover{background:rgba(176,125,42,.15)}
+.run-btn.both{background:rgba(94,62,161,.08);border:1px solid rgba(94,62,161,.2);color:#5e3ea1}
+.run-btn.both:hover{background:rgba(94,62,161,.15)}
+.run-btn:disabled{opacity:.5;cursor:not-allowed}
+.force-toggle{display:flex;align-items:center;gap:8px;margin-top:10px}
+.toggle-checkbox{width:14px;height:14px;cursor:pointer;accent-color:#a83225}
+.toggle-label{font-size:11px;color:#7a756c;cursor:pointer}
+.run-all-card{background:linear-gradient(135deg,rgba(168,50,37,.05),rgba(26,79,140,.05));border:1px solid #e4dfd4;border-radius:16px;padding:20px;margin-bottom:10px}
+.log-card{background:#fff;border:1px solid #e4dfd4;border-radius:16px;padding:20px;margin-bottom:12px}
+.log-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7a756c;margin-bottom:10px}
+.log-area{background:#faf8f3;border:1px solid #e4dfd4;border-radius:10px;padding:12px;min-height:120px;max-height:260px;overflow-y:auto;font-size:12px;font-family:monospace;line-height:1.7}
+.log-entry{display:flex;gap:10px}
+.log-time{color:#c8c3bb;flex-shrink:0}
+.log-msg{color:#7a756c}
+.log-msg.success{color:#2a7d4f}
+.log-msg.error{color:#a83225}
+.log-msg.info{color:#1a4f8c}
+.log-msg.warn{color:#b07d2a}
+.log-empty{color:#c8c3bb;font-style:italic}
+.spinner{width:14px;height:14px;border:2px solid rgba(0,0,0,.1);border-top-color:#1c1a16;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.divider{border:none;border-top:1px solid #e4dfd4;margin:16px 0}
+.back-link{text-align:center;font-size:11px;color:#c8c3bb}
+.back-link a{color:#7a756c;text-decoration:none}
+.back-link a:hover{color:#1c1a16}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">뉴스<span class="c">저</span><span class="l">울</span></div>
+  <div class="subtitle">관리자 페이지</div>
+
+  <div id="loginSection">
+    <div class="login-title">🔐 관리자 키를 입력하세요</div>
+    <label class="input-label" for="adminKey">Admin Key</label>
+    <input class="input-field" type="password" id="adminKey" placeholder="관리자 키 입력..." onkeydown="if(event.key==='Enter') login()">
+    <button class="login-btn" onclick="login()">로그인 →</button>
+  </div>
+
+  <div id="dashboard">
+    <div class="welcome">
+      <span>안녕하세요, 관리자님 👋</span>
+      <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="statComparisons">—</div>
+        <div class="stat-label">총 비교 건수</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statElection">—</div>
+        <div class="stat-label">선거 관련 분석</div>
+      </div>
+    </div>
+
+    <!-- 전체 실행 -->
+    <div class="run-all-card">
+      <div class="action-header">
+        <div class="action-icon">⚡</div>
+        <div class="action-info">
+          <h3>전체 실행</h3>
+          <p>뉴스 비교 + 선거 분석을 순서대로 실행합니다.</p>
+        </div>
+      </div>
+      <button class="run-btn both" id="runBothBtn" onclick="runBoth()">
+        <span>⚡ 전체 실행</span>
+      </button>
+      <div class="force-toggle">
+        <input type="checkbox" class="toggle-checkbox" id="forceBoth">
+        <label class="toggle-label" for="forceBoth">강제 실행 (오늘 중복 체크 무시)</label>
+      </div>
+    </div>
+
+    <!-- 뉴스 비교 -->
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-icon">📰</div>
+        <div class="action-info">
+          <h3>뉴스 비교</h3>
+          <p>조중동 vs 한경오 RSS 수집 + AI 비교 분석</p>
+        </div>
+        <div class="action-schedule">매일 오후 6시</div>
+      </div>
+      <button class="run-btn compare" id="runCompBtn" onclick="runComparisons()">
+        <span>▶ 지금 실행</span>
+      </button>
+      <div class="force-toggle">
+        <input type="checkbox" class="toggle-checkbox" id="forceComp">
+        <label class="toggle-label" for="forceComp">강제 실행</label>
+      </div>
+    </div>
+
+    <!-- 선거 분석 -->
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-icon">🗳️</div>
+        <div class="action-info">
+          <h3>선거 특집 분석</h3>
+          <p>6월 3일 지방선거 관련 보도 논조 자동 분석</p>
+        </div>
+        <div class="action-schedule">매일 오후 7시</div>
+      </div>
+      <button class="run-btn election" id="runElectionBtn" onclick="runElection()">
+        <span>▶ 지금 실행</span>
+      </button>
+      <div class="force-toggle">
+        <input type="checkbox" class="toggle-checkbox" id="forceElection">
+        <label class="toggle-label" for="forceElection">강제 실행</label>
+      </div>
+    </div>
+
+    <!-- 로그 -->
+    <div class="log-card">
+      <div class="log-title">📋 실행 로그</div>
+      <div class="log-area" id="logArea">
+        <div class="log-empty">실행 버튼을 누르면 결과가 여기에 표시됩니다.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="back-link"><a href="/">← 뉴스저울로 돌아가기</a></div>
+  </div>
+</div>
+
+<script>
+const SITE_URL = window.location.origin;
+let adminKey = '';
+
+function login() {
+  const key = document.getElementById('adminKey').value.trim();
+  if (!key) return;
+  adminKey = key;
+  localStorage.setItem('nj_admin_key', key);
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  addLog('info', '로그인 완료');
+  loadStats();
+}
+
+function logout() {
+  adminKey = '';
+  localStorage.removeItem('nj_admin_key');
+  document.getElementById('loginSection').style.display = 'block';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('adminKey').value = '';
+}
+
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('nj_admin_key');
+  if (saved) {
+    adminKey = saved;
+    document.getElementById('adminKey').value = saved;
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadStats();
+    addLog('info', '자동 로그인');
+  }
+});
+
+function addLog(type, msg) {
+  const now = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const area = document.getElementById('logArea');
+  const empty = area.querySelector('.log-empty');
+  if (empty) empty.remove();
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${now}</span><span class="log-msg ${type}">${msg}</span>`;
+  area.appendChild(entry);
+  area.scrollTop = area.scrollHeight;
+}
+
+function setLoading(btn, loading, label) {
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<div class="spinner"></div><span>실행 중...</span>' : `<span>${label}</span>`;
+}
+
+async function callFunction(fnName, force) {
+  const url = `${SITE_URL}/.netlify/functions/${fnName}?force=${force}`;
+  addLog('info', `${fnName} 실행 중...`);
+  const res = await fetch(url, { headers: { 'x-admin-key': adminKey } });
+  return res;
+}
+
+async function runComparisons() {
+  const btn = document.getElementById('runCompBtn');
+  const force = document.getElementById('forceComp').checked;
+  setLoading(btn, true);
+  try {
+    const res = await callFunction('fetch-comparisons-kr', force);
+    const data = await res.json();
+    if (res.status === 401) addLog('error', '❌ 관리자 키가 틀렸습니다');
+    else if (res.ok) {
+      if (data.saved > 0) addLog('success', `✅ 완료! ${data.saved}건 저장: ${(data.topics||[]).join(', ')}`);
+      else addLog('warn', `⚠️ ${data.message || '저장된 항목 없음'}`);
+      loadStats();
+    } else addLog('error', `❌ 오류: ${data.error}`);
+  } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
+  setLoading(btn, false, '▶ 지금 실행');
+}
+
+async function runElection() {
+  const btn = document.getElementById('runElectionBtn');
+  const force = document.getElementById('forceElection').checked;
+  setLoading(btn, true);
+  try {
+    const res = await callFunction('fetch-election-kr', force);
+    const data = await res.json();
+    if (res.status === 401) addLog('error', '❌ 관리자 키가 틀렸습니다');
+    else if (res.ok) {
+      if (data.saved > 0) addLog('success', `✅ 완료! 선거 분석 ${data.saved}건 저장`);
+      else addLog('warn', `⚠️ ${data.message || '선거 관련 기사 없음'}`);
+      loadStats();
+    } else addLog('error', `❌ 오류: ${data.error}`);
+  } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
+  setLoading(btn, false, '▶ 지금 실행');
+}
+
+async function runBoth() {
+  const btn = document.getElementById('runBothBtn');
+  const force = document.getElementById('forceBoth').checked;
+  setLoading(btn, true);
+  addLog('info', '⚡ 전체 실행 시작...');
+  try {
+    const r1 = await callFunction('fetch-comparisons-kr', force);
+    const d1 = await r1.json();
+    if (r1.status === 401) { addLog('error', '❌ 관리자 키 오류'); setLoading(btn, false, '⚡ 전체 실행'); return; }
+    if (r1.ok) addLog('success', `✅ 뉴스 비교: ${d1.saved || 0}건 저장`);
+    else addLog('error', `❌ 뉴스 비교 실패: ${d1.error}`);
+    addLog('info', '3초 후 선거 분석 시작...');
+    await new Promise(r => setTimeout(r, 3000));
+    const r2 = await callFunction('fetch-election-kr', force);
+    const d2 = await r2.json();
+    if (r2.ok) addLog('success', `✅ 선거 분석: ${d2.saved || 0}건 저장`);
+    else addLog('error', `❌ 선거 분석 실패: ${d2.error}`);
+    addLog('info', '🎉 전체 완료!');
+    loadStats();
+  } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
+  setLoading(btn, false, '⚡ 전체 실행');
+}
+
+async function loadStats() {
+  try {
+    const SUPABASE_URL = 'https://xlxztrnpmzklbnyfkrze.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_RYLor2fbXqj4aHhSW0vCsw_7ZfP2a58';
+    const headers = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'count=exact' };
+    const [r1, r2] = await Promise.all([
+      fetch(SUPABASE_URL + '/rest/v1/comparisons_kr?select=id', { method: 'HEAD', headers }),
+      fetch(SUPABASE_URL + '/rest/v1/comparisons_kr?select=id&election_related=eq.true', { method: 'HEAD', headers })
+    ]);
+    const c1 = parseInt((r1.headers.get('content-range') || '/0').split('/')[1]) || 0;
+    const c2 = parseInt((r2.headers.get('content-range') || '/0').split('/')[1]) || 0;
+    document.getElementById('statComparisons').textContent = c1;
+    document.getElementById('statElection').textContent = c2;
+  } catch(e) {}
+}
+</script>
+</body>
+</html>
