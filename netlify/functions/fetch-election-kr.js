@@ -139,45 +139,46 @@ exports.handler = async function(event, context) {
     const libFeeds = ELECTION_FEEDS.filter(f => f.lean === 'liberal');
     const saved = [];
 
+    // 각 보수 신문 1개 기사만 사용 — 타임아웃 방지
     for (const conFeed of conFeeds) {
       if (saved.length >= 2) break;
+
+      const conArticles = await fetchRSS(conFeed.url, conFeed.name);
+      if (!conArticles.length) continue;
+
+      const conArticle = conArticles[0]; // 첫 번째 기사만
+      let matched = false;
+
       for (const libFeed of libFeeds) {
-        if (saved.length >= 2) break;
+        if (matched || saved.length >= 2) break;
 
-        const [conArticles, libArticles] = await Promise.all([
-          fetchRSS(conFeed.url, conFeed.name),
-          fetchRSS(libFeed.url, libFeed.name)
-        ]);
+        const libArticles = await fetchRSS(libFeed.url, libFeed.name);
+        if (!libArticles.length) continue;
 
-        if (!conArticles.length || !libArticles.length) {
-          console.log(`선거 기사 없음: ${conFeed.name} or ${libFeed.name}`);
-          continue;
-        }
+        const libArticle = libArticles[0]; // 첫 번째 기사만
 
-        for (let i = 0; i < Math.min(conArticles.length, 3) && saved.length < 2; i++) {
-          for (let j = 0; j < Math.min(libArticles.length, 3) && saved.length < 2; j++) {
-            try {
-              const analysis = await analyzeElectionCoverage(conArticles[i], libArticles[j], conFeed.name, libFeed.name);
-              if (analysis && analysis.same_topic) {
-                const { error } = await supabase.from('comparisons_kr').insert({
-                  topic: analysis.topic,
-                  category: '선거',
-                  conservative_source: conFeed.name,
-                  conservative_summary: analysis.conservative_summary,
-                  conservative_url: conArticles[i].link,
-                  liberal_source: libFeed.name,
-                  liberal_summary: analysis.liberal_summary,
-                  liberal_url: libArticles[j].link,
-                  ai_analysis: analysis.ai_analysis,
-                  election_related: true
-                });
-                if (!error) { saved.push(analysis.topic); break; }
-              }
-              await new Promise(r => setTimeout(r, 100));
-            } catch(e) {
-              console.error('분석 오류:', e.message);
-            }
+        try {
+          console.log(`선거 비교: "${conArticle.title.substring(0,30)}" vs "${libArticle.title.substring(0,30)}"`);
+          const analysis = await analyzeElectionCoverage(conArticle, libArticle, conFeed.name, libFeed.name);
+          if (analysis && analysis.same_topic) {
+            const { error } = await supabase.from('comparisons_kr').insert({
+              topic: analysis.topic,
+              category: '선거',
+              conservative_source: conFeed.name,
+              conservative_summary: analysis.conservative_summary,
+              conservative_url: conArticle.link,
+              liberal_source: libFeed.name,
+              liberal_summary: analysis.liberal_summary,
+              liberal_url: libArticle.link,
+              ai_analysis: analysis.ai_analysis,
+              election_related: true
+            });
+            if (!error) { saved.push(analysis.topic); matched = true; }
+            else console.error('Supabase 오류:', error.message);
           }
+          await new Promise(r => setTimeout(r, 100));
+        } catch(e) {
+          console.error('분석 오류:', e.message);
         }
       }
     }
