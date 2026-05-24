@@ -21,8 +21,13 @@ const RSS_FEEDS = {
 // 정치 관련 키워드
 const POLITICS_KEYWORDS = ['대통령', '국회', '정부', '여당', '야당', '민주당', '국민의힘', '선거', '장관', '총리', '정책', '법안', '의원', '외교', '안보', '경제', '복지', '세금', '예산', '개혁', '탄핵', '지지율', '여론'];
 
+const SPORTS_KEYWORDS = ['메이저리그', '야구', '축구', '농구', '골프', '올림픽', '월드컵', '경기장', 'MLB', 'NBA', 'K리그', '리그', '득점', '홈런', '감독', '선수', '코치', '시구'];
+
 function isPolitical(title, desc) {
-  const text = (title + ' ' + desc).toLowerCase();
+  const text = title + ' ' + desc;
+  // 스포츠 기사 제외
+  if (SPORTS_KEYWORDS.some(kw => text.includes(kw))) return false;
+  // 정치 키워드 포함 여부
   return POLITICS_KEYWORDS.some(kw => text.includes(kw));
 }
 
