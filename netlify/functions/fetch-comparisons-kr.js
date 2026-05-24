@@ -1,6 +1,4 @@
 // netlify/functions/fetch-comparisons-kr.js
-// 매일 조중동(보수) vs 한경오(진보) 비교 + Claude AI 분석 + Supabase 저장
-
 const { createClient } = require('@supabase/supabase-js');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -18,16 +16,12 @@ const RSS_FEEDS = {
   ]
 };
 
-// 정치 관련 키워드
-const POLITICS_KEYWORDS = ['대통령', '국회', '정부', '여당', '야당', '민주당', '국민의힘', '선거', '장관', '총리', '정책', '법안', '의원', '외교', '안보', '경제', '복지', '세금', '예산', '개혁', '탄핵', '지지율', '여론'];
-
-const SPORTS_KEYWORDS = ['메이저리그', '야구', '축구', '농구', '골프', '올림픽', '월드컵', '경기장', 'MLB', 'NBA', 'K리그', '리그', '득점', '홈런', '감독', '선수', '코치', '시구'];
+const POLITICS_KEYWORDS = ['대통령', '국회', '정부', '여당', '야당', '민주당', '국민의힘', '선거', '장관', '총리', '정책', '법안', '의원', '외교', '안보', '복지', '세금', '예산', '개혁', '탄핵', '지지율', '여론', '공약'];
+const SPORTS_KEYWORDS = ['메이저리그', '야구', '축구', '농구', '골프', '올림픽', '월드컵', 'MLB', 'NBA', 'K리그', '득점', '홈런', '시구', '경기장', '코치', '선수단'];
 
 function isPolitical(title, desc) {
-  const text = title + ' ' + desc;
-  // 스포츠 기사 제외
+  const text = title + ' ' + (desc || '');
   if (SPORTS_KEYWORDS.some(kw => text.includes(kw))) return false;
-  // 정치 키워드 포함 여부
   return POLITICS_KEYWORDS.some(kw => text.includes(kw));
 }
 
@@ -35,7 +29,7 @@ async function fetchRSS(url, sourceName) {
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsJeoul/1.0)' },
-      signal: AbortSignal.timeout(10000)
+      signal: AbortSignal.timeout(8000)
     });
     if (!res.ok) { console.error(`RSS HTTP ${res.status}: ${url}`); return []; }
     const xml = await res.text();
@@ -46,8 +40,8 @@ async function fetchRSS(url, sourceName) {
       const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/);
       const linkMatch = item.match(/<link>(https?:\/\/[^<\s]+)/);
       const descMatch = item.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/);
-      const title = (titleMatch?.[1] || '').replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
-      const desc = (descMatch?.[1] || '').replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').substring(0, 300).trim();
+      const title = (titleMatch?.[1] || '').replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').trim();
+      const desc = (descMatch?.[1] || '').replace(/<[^>]+>/g, '').substring(0, 300).trim();
       if (title && title.length > 5) {
         items.push({ title, link: (linkMatch?.[1] || '').trim(), description: desc });
       }
@@ -139,7 +133,6 @@ exports.handler = async function(event, context) {
     }
 
     const saved = [];
-    // 각 보수 신문의 기사를 한 번씩만 사용
     const usedConArticles = new Set();
     const usedLibArticles = new Set();
 
@@ -149,52 +142,59 @@ exports.handler = async function(event, context) {
       const conArticles = await fetchRSS(conFeed.url, conFeed.name);
       if (!conArticles.length) continue;
 
-      // 이 보수 신문에서 첫 번째 기사만 시도
-      // 정치 관련 기사 우선 선택
-      const conArticle = conArticles.find(a => isPolitical(a.title, a.description)) || conArticles[0];
-      const conKey = conFeed.name + conArticle.title.substring(0,20);
-      if (usedConArticles.has(conKey)) continue;
+      // 정치 기사 최대 3개 시도
+      const politicalArticles = conArticles.filter(a => isPolitical(a.title, a.description)).slice(0, 3);
+      console.log(`정치 기사 ${politicalArticles.length}개 발견`);
+      if (!politicalArticles.length) continue;
 
-      // 진보 신문 중 매칭되는 것 찾기
       let matched = false;
-      for (const libFeed of RSS_FEEDS.liberal) {
-        if (matched || saved.length >= 3) break;
+      for (const conArticle of politicalArticles) {
+        if (matched || saved.length >= 1) break;
+        const conKey = conFeed.name + conArticle.title.substring(0, 20);
+        if (usedConArticles.has(conKey)) continue;
 
-        const libArticles = await fetchRSS(libFeed.url, libFeed.name);
-        if (!libArticles.length) continue;
+        for (const libFeed of RSS_FEEDS.liberal) {
+          if (matched || saved.length >= 1) break;
 
-        for (let j = 0; j < Math.min(libArticles.length, 3) && !matched; j++) {
-          const libKey = libFeed.name + libArticles[j].title.substring(0,20);
-          if (usedLibArticles.has(libKey)) continue;
+          const libArticles = await fetchRSS(libFeed.url, libFeed.name);
+          if (!libArticles.length) continue;
 
-          try {
-            console.log(`비교: "${conArticle.title.substring(0,30)}" (${conFeed.name}) vs "${libArticles[j].title.substring(0,30)}" (${libFeed.name})`);
-            const analysis = await analyzeWithClaude(conArticle, libArticles[j], conFeed.name, libFeed.name);
+          const libPolitical = libArticles.filter(a => isPolitical(a.title, a.description)).slice(0, 3);
 
-            if (analysis && analysis.same_topic) {
-              console.log('매칭 발견:', analysis.topic);
-              const { error } = await supabase.from('comparisons_kr').insert({
-                topic: analysis.topic,
-                category: analysis.category,
-                conservative_source: conFeed.name,
-                conservative_summary: analysis.conservative_summary,
-                conservative_url: conArticle.link,
-                liberal_source: libFeed.name,
-                liberal_summary: analysis.liberal_summary,
-                liberal_url: libArticles[j].link,
-                ai_analysis: analysis.ai_analysis,
-                election_related: analysis.election_related || false
-              });
-              if (!error) {
-                saved.push(analysis.topic);
-                usedConArticles.add(conKey);
-                usedLibArticles.add(libKey);
-                matched = true;
-              } else console.error('Supabase 오류:', error.message);
+          for (const libArticle of libPolitical) {
+            if (matched) break;
+            const libKey = libFeed.name + libArticle.title.substring(0, 20);
+            if (usedLibArticles.has(libKey)) continue;
+
+            try {
+              console.log(`비교: "${conArticle.title.substring(0,25)}" vs "${libArticle.title.substring(0,25)}"`);
+              const analysis = await analyzeWithClaude(conArticle, libArticle, conFeed.name, libFeed.name);
+
+              if (analysis && analysis.same_topic) {
+                console.log('매칭!', analysis.topic);
+                const { error } = await supabase.from('comparisons_kr').insert({
+                  topic: analysis.topic,
+                  category: analysis.category,
+                  conservative_source: conFeed.name,
+                  conservative_summary: analysis.conservative_summary,
+                  conservative_url: conArticle.link,
+                  liberal_source: libFeed.name,
+                  liberal_summary: analysis.liberal_summary,
+                  liberal_url: libArticle.link,
+                  ai_analysis: analysis.ai_analysis,
+                  election_related: analysis.election_related || false
+                });
+                if (!error) {
+                  saved.push(analysis.topic);
+                  usedConArticles.add(conKey);
+                  usedLibArticles.add(libKey);
+                  matched = true;
+                } else console.error('Supabase 오류:', error.message);
+              }
+              await new Promise(r => setTimeout(r, 80));
+            } catch(e) {
+              console.error('분석 오류:', e.message);
             }
-            await new Promise(r => setTimeout(r, 100));
-          } catch(e) {
-            console.error('분석 오류:', e.message);
           }
         }
       }
