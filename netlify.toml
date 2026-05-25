@@ -1,32 +1,19 @@
-# netlify.toml - 뉴스저울 배포 설정
-
 [build]
-  publish = "."
   functions = "netlify/functions"
 
-[build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "index.html,election.html,admin.html"
-  SECRETS_SCAN_OMIT_KEYS = "SECRETS_SCAN_OMIT_PATHS"
+[functions]
+  node_bundler = "esbuild"
 
-# 매일 오전 9시 (UTC / 한국 오후 6시) — 뉴스 비교 자동 생성
-[functions."fetch-comparisons-kr"]
-  schedule = "0 9 * * *"
+# 오전 9시 KST = 00:00 UTC
+[functions."update-news"]
+  schedule = "0 0 * * *"
 
-# 매일 오전 10시 (UTC / 한국 오후 7시) — 선거 뉴스 분석
-[functions."fetch-election-kr"]
-  schedule = "0 10 * * *"
+[functions."update-elections"]
+  schedule = "0 0 * * *"
 
-[[redirects]]
-  from = "http://newsjeoul.co.kr/*"
-  to = "https://newsjeoul.co.kr/:splat"
-  status = 301
-  force = true
+# 오후 9시 KST = 12:00 UTC
+[functions."update-news-evening"]
+  schedule = "0 12 * * *"
 
-[[redirects]]
-  from = "http://www.newsjeoul.co.kr/*"
-  to = "https://newsjeoul.co.kr/:splat"
-  status = 301
-  force = true
-
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
+[functions."update-elections-evening"]
+  schedule = "0 12 * * *"

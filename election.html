@@ -1,669 +1,1009 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>선거 특집 — 뉴스저울</title>
-<meta name="description" content="같은 후보, 언론사마다 다른 지지율. 여론조사 비교, 공약 수치 비교, 미디어 편향 분석.">
+<title>6·3 선거 특집 — 뉴스저울</title>
+<meta name="description" content="같은 후보, 언론사마다 다른 지지율. 광역·기초단체장, 국회의원 보궐선거 미디어 편향 분석.">
+<meta property="og:title" content="6·3 선거 특집 — 뉴스저울">
+<meta property="og:description" content="조선일보 vs 한겨레, 같은 선거구 다른 여론조사. 어느 언론을 믿어야 할까요?">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#faf8f3;--bg2:#f2efe8;--card:#ffffff;--card2:#f7f5f0;
-  --border:#e4dfd4;--border2:#d4cec3;
-  --con:#a83225;--lib:#1a4f8c;
-  --con-soft:rgba(168,50,37,.06);--lib-soft:rgba(26,79,140,.06);
-  --con-glow:rgba(168,50,37,.11);--lib-glow:rgba(26,79,140,.11);
-  --gold:#b07d2a;--green:#2a7d4f;--purple:#5e3ea1;
-  --text:#1c1a16;--text2:#3d3a34;--muted:#7a756c;--muted2:#c8c3bb;
+  --bg:#080808;--bg2:#101010;--card:#141414;--card2:#1a1a1a;
+  --border:#1e1e1e;--border2:#2a2a2a;
+  --con:#e63946;--lib:#2563eb;
+  --con-soft:rgba(230,57,70,.08);--lib-soft:rgba(37,99,235,.08);
+  --con-glow:rgba(230,57,70,.15);--lib-glow:rgba(37,99,235,.15);
+  --gold:#f59e0b;--green:#10b981;--purple:#8b5cf6;--orange:#f97316;
+  --text:#f0f0e8;--text2:#b8b8b0;--muted:#555;--muted2:#333;
+  --radius:16px;
 }
-[data-theme="dark"]{
-  --bg:#0e0d0b;--bg2:#161410;--card:#1c1a16;--card2:#232018;
-  --border:#2a2720;--border2:#363028;
-  --con:#c0392b;--lib:#2563eb;
-  --con-soft:rgba(192,57,43,.08);--lib-soft:rgba(37,99,235,.08);
-  --con-glow:rgba(192,57,43,.15);--lib-glow:rgba(37,99,235,.15);
-  --gold:#d97706;--green:#059669;--purple:#7c3aed;
-  --text:#f0ece4;--text2:#b8b2a8;--muted:#6a6560;--muted2:#3a3630;
+[data-theme="light"]{
+  --bg:#f5f4ef;--bg2:#eeede8;--card:#fff;--card2:#f9f8f4;
+  --border:#e0dfd8;--border2:#ccc;
+  --con:#c0392b;--lib:#1d4ed8;
+  --con-soft:rgba(192,57,43,.06);--lib-soft:rgba(29,78,216,.06);
+  --con-glow:rgba(192,57,43,.12);--lib-glow:rgba(29,78,216,.12);
+  --text:#1a1a14;--text2:#444;--muted:#888;--muted2:#ccc;
 }
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;font-size:15px;padding-bottom:60px}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;font-size:15px;padding-bottom:80px}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.35}
 
 /* NAV */
-.nav{background:rgba(250,248,243,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:14px}
-[data-theme="dark"] .nav{background:rgba(14,13,11,.97)}
+.nav{background:rgba(8,8,8,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:14px}
+[data-theme="light"] .nav{background:rgba(245,244,239,.96)}
 .nav-logo{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--text);text-decoration:none}
-.nav-logo .c{color:var(--con)}
-.nav-logo .l{color:var(--lib)}
+.nav-logo .c{color:var(--con)}.nav-logo .l{color:var(--lib)}
 .nav-back{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:color .15s}
 .nav-back:hover{color:var(--text)}
-.nav-badge{margin-left:auto;background:var(--con);color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.08em}
+.nav-badge{margin-left:auto;background:var(--con);color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.08em;animation:pulse-badge 2s infinite}
+@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.7}}
 .theme-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer}
 
 /* HERO */
-.hero{max-width:1100px;margin:0 auto;padding:28px 20px 0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.hero{padding:28px 0 0}
 .hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--con);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.hero-eyebrow .pulse{width:6px;height:6px;border-radius:50%;background:var(--con);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(26px,5vw,44px);color:var(--text);line-height:1.3;margin-bottom:10px}
-.hero-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px}
-.dday-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.dday-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;text-align:center}
-.dday-num{font-family:'Bebas Neue',cursive;font-size:48px;color:var(--gold);line-height:1}
-.dday-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.dday-date{font-size:13px;color:var(--text2);margin-top:2px}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--con);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(24px,4.5vw,40px);color:var(--text);line-height:1.3;margin-bottom:10px}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;max-width:600px}
+.dday-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.dday-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 18px;text-align:center;min-width:90px}
+.dday-num{font-family:'Bebas Neue',cursive;font-size:44px;color:var(--gold);line-height:1}
+.dday-label{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.dday-date{font-size:11px;color:var(--text2);margin-top:2px}
+.dday-note{font-size:12px;color:var(--muted);line-height:1.8}
 
-/* LIVE SCALE */
-.scale-section{max-width:1100px;margin:28px auto 0;padding:0 20px}
-.section-title{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:6px}
-.section-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--con)}
-.scale-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;text-align:center;overflow:hidden}
-.scale-title{font-size:14px;color:var(--text2);margin-bottom:24px;font-weight:300}
-.scale-wrap{position:relative;height:180px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
-.scale-beam{position:relative;width:300px;height:4px;background:var(--border2);border-radius:2px;transform-origin:center;transition:transform 1.2s cubic-bezier(.34,1.56,.64,1)}
-.scale-beam.lean-con{transform:rotate(8deg)}
-.scale-beam.lean-lib{transform:rotate(-8deg)}
-.scale-beam.balanced{transform:rotate(0deg)}
-.scale-pivot{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);width:8px;height:40px;background:var(--border2);border-radius:4px}
-.scale-cup{position:absolute;top:-60px;width:80px;height:50px;border-radius:0 0 40px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all 1.2s cubic-bezier(.34,1.56,.64,1)}
-.scale-cup.left{left:-40px;background:var(--con-glow);border:1px solid rgba(230,57,70,.25)}
-.scale-cup.right{right:-40px;background:var(--lib-glow);border:1px solid rgba(37,99,235,.25)}
-.scale-cup-pct{font-family:'Bebas Neue',cursive;font-size:28px;line-height:1}
-.scale-cup.left .scale-cup-pct{color:var(--con)}
-.scale-cup.right .scale-cup-pct{color:var(--lib)}
-.scale-cup-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-.scale-cup.left .scale-cup-label{color:rgba(230,57,70,.7)}
-.scale-cup.right .scale-cup-label{color:rgba(37,99,235,.7)}
-.scale-string{position:absolute;top:-60px;width:1px;background:var(--border2);transition:height 1.2s}
-.scale-string.left{left:0;height:60px;transform-origin:top}
-.scale-string.right{right:0;height:60px;transform-origin:top}
-.scale-result{font-size:13px;color:var(--text2);line-height:1.7}
-.scale-result strong{color:var(--text);font-weight:700}
-.scale-outlet-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;font-size:12px;color:var(--muted)}
-.scale-outlet-btn{padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Noto Sans KR',sans-serif;transition:all .2s}
-.scale-outlet-btn.active{background:var(--card2);color:var(--text);border-color:var(--border2)}
+/* SECTION HEADER */
+.sec{margin-top:32px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--con)}
+.sec-title.gold::before{background:var(--gold)}
+.sec-title.green::before{background:var(--green)}
+.sec-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.06em}
+.sec-badge.hot{background:rgba(230,57,70,.15);border:1px solid rgba(230,57,70,.3);color:var(--con)}
+.sec-badge.warm{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--gold)}
 
-/* POLL COMPARISON */
-.poll-section{max-width:1100px;margin:28px auto 0;padding:0 20px}
-.poll-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:12px}
-.poll-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.poll-date{font-size:12px;color:var(--muted)}
-.poll-source{font-size:12px;color:var(--text2);font-weight:500}
-.poll-body{padding:18px 22px}
-.poll-row{margin-bottom:14px}
-.poll-row:last-child{margin-bottom:0}
-.poll-candidate{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.poll-cand-name{font-size:13px;font-weight:600;color:var(--text)}
-.poll-cand-pct{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--text)}
-.poll-bar-track{height:10px;background:var(--border);border-radius:999px;overflow:hidden}
-.poll-bar-fill{height:100%;border-radius:999px;transition:width 1s ease}
-.poll-bar-fill.a{background:linear-gradient(90deg,#e63946,#ff6b6b)}
-.poll-bar-fill.b{background:linear-gradient(90deg,#2563eb,#60a5fa)}
-.poll-gap-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:600}
-.poll-gap-badge.con-lead{background:var(--con-glow);border:1px solid rgba(230,57,70,.3);color:var(--con)}
-.poll-gap-badge.lib-lead{background:var(--lib-glow);border:1px solid rgba(37,99,235,.3);color:var(--lib)}
-.poll-gap-badge.tie{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--gold)}
-/* DIFF TABLE */
-.diff-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:28px}
-.diff-header{padding:18px 22px 14px;border-bottom:1px solid var(--border)}
-.diff-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
-.diff-sub{font-size:12px;color:var(--muted)}
-.diff-table{width:100%;border-collapse:collapse}
-.diff-table th{padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border);background:var(--bg2)}
-.diff-table th.con-h{color:var(--con)}
-.diff-table th.lib-h{color:var(--lib)}
-.diff-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:top}
-.diff-table tr:last-child td{border-bottom:none}
-.diff-table tr:hover td{background:rgba(255,255,255,.01)}
-.diff-outlet{font-size:11px;color:var(--muted);margin-top:3px}
-.pct-num{font-family:'Bebas Neue',cursive;font-size:28px}
-.pct-num.a{color:var(--con)}
-.pct-num.b{color:var(--lib)}
-.diff-gap{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--gold)}
-.diff-gap-label{font-size:10px;color:var(--muted);margin-top:2px}
+/* ── FEATURED: 부산북갑 ── */
+.featured-card{background:var(--card);border:2px solid rgba(230,57,70,.4);border-radius:20px;overflow:hidden;position:relative;margin-bottom:16px}
+.featured-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--con),var(--gold),var(--lib))}
+.featured-top{padding:20px 24px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.featured-label{background:var(--con);color:#fff;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:999px;flex-shrink:0}
+.featured-region{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--text)}
+.featured-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6}
+.featured-insight{padding:12px 24px;background:rgba(245,158,11,.06);border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.7}
+.featured-insight strong{color:var(--gold)}
 
-/* POLICY */
-.policy-section{max-width:1100px;margin:0 auto 28px;padding:0 20px}
-.policy-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden}
-.policy-header{padding:18px 22px 14px;border-bottom:1px solid var(--border)}
-.policy-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
-.policy-sub{font-size:12px;color:var(--muted)}
-.policy-table{width:100%;border-collapse:collapse}
-.policy-table th{padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-align:center;border-bottom:1px solid var(--border);background:var(--bg2)}
-.policy-table th:first-child{text-align:left;color:var(--muted)}
-.policy-table th.ah{color:var(--con)}
-.policy-table th.bh{color:var(--lib)}
-.policy-table td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);text-align:center;vertical-align:middle;line-height:1.5}
-.policy-table td:first-child{text-align:left;font-weight:600;color:var(--text2)}
-.policy-table tr:last-child td{border-bottom:none}
-.policy-num{font-family:'Bebas Neue',cursive;font-size:22px;display:block;line-height:1.1}
-.policy-num.a{color:var(--con)}
-.policy-num.b{color:var(--lib)}
-.policy-sub-text{font-size:10px;color:var(--muted);margin-top:2px}
-.policy-tag{display:inline-block;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600}
-.policy-tag.up{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:var(--green)}
-.policy-tag.down{background:rgba(230,57,70,.08);border:1px solid rgba(230,57,70,.2);color:var(--con)}
-.policy-tag.keep{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted)}
-.policy-tag.bold{background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);color:var(--lib)}
+/* 3파전 여론조사 비교 */
+.three-way{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+@media(max-width:700px){.three-way{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.three-way{grid-template-columns:1fr}}
+.tw-cell{background:var(--card);padding:16px}
+.tw-outlet{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.tw-outlet-dot{width:5px;height:5px;border-radius:50%}
+.tw-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tw-name{font-size:11px;color:var(--text2);width:60px;flex-shrink:0}
+.tw-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:999px;overflow:hidden}
+.tw-bar{height:100%;border-radius:999px;transition:width 1s ease}
+.tw-bar.dem{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.tw-bar.ind{background:linear-gradient(90deg,#8b5cf6,#c4b5fd)}
+.tw-bar.ppp{background:linear-gradient(90deg,#e63946,#ff6b6b)}
+.tw-pct{font-family:'Bebas Neue',cursive;font-size:18px;width:36px;text-align:right;flex-shrink:0}
+.tw-pct.dem{color:var(--lib)}
+.tw-pct.ind{color:var(--purple)}
+.tw-pct.ppp{color:var(--con)}
+.tw-date{font-size:10px;color:var(--muted);margin-top:10px}
+.tw-diff{margin-top:8px;padding:6px 8px;border-radius:8px;font-size:11px;font-weight:600;text-align:center}
+.tw-diff.wider{background:rgba(37,99,235,.1);color:var(--lib)}
+.tw-diff.closer{background:rgba(245,158,11,.1);color:var(--gold)}
+.featured-footer{padding:14px 24px;display:flex;align-items:center;gap:8px}
+.featured-footer-text{font-size:12px;color:var(--text2);line-height:1.6;flex:1}
+.featured-footer-text strong{color:var(--con)}
 
-/* MEDIA BIAS */
-.bias-section{max-width:1100px;margin:0 auto 28px;padding:0 20px}
+/* ── 광역단체장 GRID ── */
+.metro-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:640px){.metro-grid{grid-template-columns:1fr}}
+.metro-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,box-shadow .2s}
+.metro-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.metro-card.hot-race{border-color:rgba(245,158,11,.3)}
+.metro-head{padding:16px 18px 12px;border-bottom:1px solid var(--border)}
+.metro-region{font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
+.metro-type{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted)}
+.metro-race-tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:auto}
+.metro-race-tag.tight{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--gold)}
+.metro-race-tag.clear{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:var(--lib)}
+.metro-body{padding:14px 18px}
+.metro-row{margin-bottom:10px}
+.metro-row:last-child{margin-bottom:0}
+.metro-cand{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.metro-cand-info{display:flex;align-items:center;gap:6px}
+.metro-cand-name{font-size:13px;font-weight:600;color:var(--text)}
+.metro-party{font-size:10px;color:var(--muted)}
+.metro-pct{font-family:'Bebas Neue',cursive;font-size:22px}
+.metro-pct.lib{color:var(--lib)}
+.metro-pct.con{color:var(--con)}
+.metro-bar-track{height:7px;background:var(--border);border-radius:999px;overflow:hidden}
+.metro-bar-fill{height:100%;border-radius:999px}
+.metro-bar-fill.lib{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.metro-bar-fill.con{background:linear-gradient(90deg,#e63946,#ff6b6b)}
+.metro-gap{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.metro-gap-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px}
+.metro-gap-badge.lib{background:var(--lib-soft);border:1px solid rgba(37,99,235,.25);color:var(--lib)}
+.metro-gap-badge.con{background:var(--con-soft);border:1px solid rgba(230,57,70,.25);color:var(--con)}
+.metro-gap-badge.tight{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:var(--gold)}
+.metro-source{font-size:10px;color:var(--muted);margin-left:auto}
+
+/* ── 보궐선거 리스트 ── */
+.byelec-list{display:flex;flex-direction:column;gap:10px}
+.byelec-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.byelec-card.featured-by{border-color:rgba(245,158,11,.35)}
+.byelec-head{padding:14px 18px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.byelec-region{font-size:13px;font-weight:700;color:var(--text)}
+.byelec-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.byelec-hot-badge{font-size:9px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--gold);flex-shrink:0;margin-left:auto}
+.byelec-body{padding:14px 18px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.byelec-cand-row{display:flex;align-items:center;gap:8px}
+.byelec-cand-name{font-size:12px;font-weight:600;color:var(--text)}
+.byelec-cand-party{font-size:10px;color:var(--muted)}
+.byelec-pct{font-family:'Bebas Neue',cursive;font-size:24px}
+.byelec-pct.lib{color:var(--lib)}
+.byelec-pct.con{color:var(--con)}
+.byelec-pct.ind{color:var(--purple)}
+.byelec-divider{width:1px;height:32px;background:var(--border2);flex-shrink:0}
+.byelec-insight{padding:10px 18px;background:rgba(255,255,255,.02);border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.6}
+.byelec-insight strong{color:var(--text2)}
+
+/* ── 기초단체장 ── */
+.basic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:780px){.basic-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.basic-grid{grid-template-columns:1fr}}
+.basic-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:transform .2s}
+.basic-card:hover{transform:translateY(-2px)}
+.basic-card.issue{border-color:rgba(139,92,246,.3)}
+.basic-region{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.basic-type{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.basic-vs{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.basic-cand{font-size:11px;font-weight:600}
+.basic-cand.lib{color:var(--lib)}
+.basic-cand.con{color:var(--con)}
+.basic-cand.ind{color:var(--purple)}
+.basic-vs-dot{font-size:10px;color:var(--muted)}
+.basic-status{margin-top:8px;font-size:10px;padding:3px 8px;border-radius:999px;display:inline-block;font-weight:600}
+.basic-status.tight{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--gold)}
+.basic-status.lib-lead{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:var(--lib)}
+.basic-status.con-lead{background:rgba(230,57,70,.08);border:1px solid rgba(230,57,70,.2);color:var(--con)}
+.basic-status.issue{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);color:var(--purple)}
+.basic-note{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5}
+
+/* ── BIAS TABLE ── */
 .bias-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden}
-.bias-header{padding:18px 22px 14px;border-bottom:1px solid var(--border)}
-.bias-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
-.bias-sub{font-size:12px;color:var(--muted)}
-.bias-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
-@media(max-width:640px){.bias-grid{grid-template-columns:1fr}}
-.bias-outlet-block{background:var(--card);padding:20px}
-.bias-outlet-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
-.bias-outlet-lean{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
-.bias-outlet-lean.con{color:var(--con)}
-.bias-outlet-lean.lib{color:var(--lib)}
-.bias-meter-row{margin-bottom:10px}
-.bias-meter-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-size:11px;color:var(--muted)}
-.bias-meter-pct{font-weight:700;color:var(--text)}
-.bias-bar-track{height:8px;background:var(--border);border-radius:999px;overflow:hidden}
+.bias-head{padding:16px 22px 12px;border-bottom:1px solid var(--border)}
+.bias-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.bias-sub{font-size:11px;color:var(--muted);line-height:1.6}
+.bias-table-wrap{overflow-x:auto}
+.bias-table{width:100%;border-collapse:collapse;min-width:560px}
+.bias-table th{padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border);background:var(--bg2)}
+.bias-table th.c{color:var(--con)}.bias-table th.l{color:var(--lib)}
+.bias-table td{padding:12px 16px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.bias-table tr:last-child td{border-bottom:none}
+.bias-outlet-name{font-weight:700;font-size:13px}
+.bias-lean{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.bias-lean.con{color:var(--con)}.bias-lean.lib{color:var(--lib)}.bias-lean.mid{color:var(--gold)}
+.bias-bar-row{display:flex;align-items:center;gap:8px}
+.bias-bar-track{flex:1;height:8px;background:var(--border);border-radius:999px;overflow:hidden}
 .bias-bar-pos{height:100%;border-radius:999px;background:var(--green)}
-.bias-bar-neg{height:100%;border-radius:999px;background:var(--con)}
-.bias-note{font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.6}
-.bias-summary{padding:16px 22px;border-top:1px solid var(--border);background:rgba(245,158,11,.04)}
-.bias-summary-text{font-size:13px;color:var(--text2);line-height:1.8;font-weight:300}
-.bias-summary-text strong{color:var(--gold);font-weight:700}
+.bias-pct{font-family:'Bebas Neue',cursive;font-size:18px;width:38px;text-align:right}
+.bias-pct.hi{color:var(--green)}.bias-pct.lo{color:var(--con)}
+.bias-summary-row{padding:14px 22px;background:rgba(245,158,11,.04);border-top:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.8}
+.bias-summary-row strong{color:var(--gold)}
 
 /* SHARE */
-.share-section{max-width:1100px;margin:0 auto 28px;padding:0 20px}
-.share-card{background:linear-gradient(135deg,var(--con-soft),var(--lib-soft));border:1px solid var(--border2);border-radius:20px;padding:24px;text-align:center}
-.share-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px}
-.share-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px}
-.share-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.share-btn{padding:11px 22px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s;color:#fff}
-.share-btn:hover{opacity:.85}
-.share-thread{background:#000}
-.share-x{background:#1a1a1a;border:1px solid #333}
-.share-copy{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border2)}
+.share-card{background:linear-gradient(135deg,var(--con-soft),var(--lib-soft));border:1px solid var(--border2);border-radius:20px;padding:24px;text-align:center;margin-top:32px}
+.share-title{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.share-sub{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.share-btns{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.share-btn{padding:10px 20px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;color:#fff;transition:opacity .15s}
+.share-btn:hover{opacity:.82}
+.share-thread{background:#000}.share-x{background:#111;border:1px solid #333 !important}
+.share-copy{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border2) !important}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);border:1px solid var(--border2);border-radius:999px;padding:10px 20px;font-size:13px;color:var(--text);opacity:0;transition:all .25s;z-index:300;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* DISCLAIMER */
+.disclaimer{margin-top:24px;padding:14px 20px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.7}
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <a class="nav-logo" href="/">⚖️ 뉴스<span class="c">저</span><span class="l">울</span></a>
-  <button class="nav-back" onclick="history.back()">← 메인으로</button>
+  <button class="nav-back" onclick="location.href='/'">← 메인으로</button>
   <div class="nav-badge" id="navDday">선거 D-?</div>
   <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
 </nav>
 
+<div class="wrap">
+
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow"><div class="pulse"></div>🗳️ 선거 특집 — 수치로 보는 미디어 편향</div>
-  <h1 class="hero-title">같은 후보, 언론사마다<br>왜 지지율이 다를까요?</h1>
-  <p class="hero-sub">조선일보가 의뢰한 여론조사와 한겨레가 의뢰한 여론조사는 결과가 다릅니다.<br>공약도, 보도 논조도, 긍정/부정 기사 비율도 — 모두 숫자로 비교합니다.</p>
+  <div class="hero-eyebrow"><div class="pulse-dot"></div>6·3 선거 특집 — 미디어 편향 실시간 추적</div>
+  <h1 class="hero-title">같은 후보, 어느 언론에<br>의뢰했느냐에 따라 다르다</h1>
+  <p class="hero-sub">광역단체장·기초단체장·국회의원 보궐선거까지.<br>조선일보가 의뢰한 여론조사와 JTBC가 의뢰한 여론조사, 숫자가 왜 다를까요?</p>
   <div class="dday-row">
     <div class="dday-box">
       <div class="dday-num" id="ddayNum">D-?</div>
-      <div class="dday-label">대선까지</div>
+      <div class="dday-label">선거까지</div>
       <div class="dday-date">2026년 6월 3일</div>
     </div>
-    <div style="font-size:13px;color:var(--muted);line-height:1.8">
-      ⚠️ <strong style="color:var(--text)">주의:</strong> 아래 수치는 뉴스저울이 수집한<br>실제 여론조사 결과 기반입니다.<br>언론사마다 왜 다른지 직접 확인하세요.
+    <div class="dday-note">
+      ⚠️ 아래 수치는 각 언론사 의뢰 여론조사 기반.<br>
+      <strong style="color:var(--text)">같은 날 같은 지역구, 최대 8%p 차이</strong>가 납니다.
     </div>
   </div>
 </div>
 
-<!-- LIVE SCALE -->
-<div class="scale-section">
-  <div class="section-title">실시간 여론조사 저울</div>
-  <div class="scale-card">
-    <div class="scale-title">현재 선택된 언론사 여론조사 기준 — <strong id="scaleOutletName">조선일보 의뢰</strong></div>
-    <div class="scale-wrap">
-      <div class="scale-beam" id="scaleBeam">
-        <div class="scale-cup left">
-          <div class="scale-cup-pct" id="scalePctA">47%</div>
-          <div class="scale-cup-label">후보 A</div>
+<!-- ──────────────────────────────── -->
+<!-- 🔥 FEATURED: 부산 북구갑 보궐   -->
+<!-- ──────────────────────────────── -->
+<div class="sec">
+  <div class="sec-head">
+    <div class="sec-title">🔥 이번 선거 최대 이슈</div>
+    <span class="sec-badge hot">3파전 · 전국 주목</span>
+  </div>
+
+  <div class="featured-card">
+    <div class="featured-top">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span class="featured-label">국회의원 보궐선거</span>
+          <span style="font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.08em">부산 북구갑</span>
         </div>
-        <div class="scale-cup right">
-          <div class="scale-cup-pct" id="scalePctB">46%</div>
-          <div class="scale-cup-label">후보 B</div>
-        </div>
-        <div class="scale-string left"></div>
-        <div class="scale-string right"></div>
-        <div class="scale-pivot"></div>
+        <div class="featured-region">하정우 vs 한동훈 vs 박민식</div>
+        <div class="featured-sub">전 청와대 AI수석 vs 전 당대표(무소속) vs 현역 정치인 — 보수 분열이 최대 변수</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'Bebas Neue',cursive;font-size:36px;color:var(--gold);line-height:1">D-<span id="featDday">?</span></div>
+        <div style="font-size:10px;color:var(--muted)">선거까지</div>
       </div>
     </div>
-    <div class="scale-result" id="scaleResult">
-      <strong>후보 A가 1%p 앞섭니다</strong> — 조선일보 의뢰 (2026.05.20)
+
+    <div class="featured-insight">
+      💡 <strong>뉴스저울 포인트:</strong> 같은 선거구, 같은 시기, 의뢰 언론사에 따라 하정우-한동훈 격차가 <strong>5%p~8%p</strong>까지 달라집니다. 보수 단일화 여부가 핵심 변수.
     </div>
-    <div class="scale-outlet-row">
-      언론사 선택:
-      <button class="scale-outlet-btn active" onclick="changeScale(this,'조선일보 의뢰',47,46,'con')">📰 조선일보</button>
-      <button class="scale-outlet-btn" onclick="changeScale(this,'한겨레 의뢰',44,52,'lib')">📰 한겨레</button>
-      <button class="scale-outlet-btn" onclick="changeScale(this,'중앙일보 의뢰',45,47,'lib')">📰 중앙일보</button>
-      <button class="scale-outlet-btn" onclick="changeScale(this,'경향신문 의뢰',43,53,'lib')">📰 경향신문</button>
+
+    <div class="three-way">
+      <div class="tw-cell">
+        <div class="tw-outlet">
+          <div class="tw-outlet-dot" style="background:var(--lib)"></div>
+          뉴스1 / 갤럽
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--lib);font-weight:600">하정우</div>
+          <div class="tw-bar-wrap"><div class="tw-bar dem" style="width:39%"></div></div>
+          <div class="tw-pct dem">39%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--purple);font-weight:600">한동훈</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ind" style="width:29%"></div></div>
+          <div class="tw-pct ind">29%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--con);font-weight:600">박민식</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ppp" style="width:21%"></div></div>
+          <div class="tw-pct ppp">21%</div>
+        </div>
+        <div class="tw-date">5.12~13 · n=508</div>
+        <div class="tw-diff wider">하정우 10%p 우세</div>
+      </div>
+
+      <div class="tw-cell">
+        <div class="tw-outlet">
+          <div class="tw-outlet-dot" style="background:var(--purple)"></div>
+          JTBC / 메타보이스
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--lib);font-weight:600">하정우</div>
+          <div class="tw-bar-wrap"><div class="tw-bar dem" style="width:37%"></div></div>
+          <div class="tw-pct dem">37%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--purple);font-weight:600">한동훈</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ind" style="width:25%"></div></div>
+          <div class="tw-pct ind">25%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--con);font-weight:600">박민식</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ppp" style="width:26%"></div></div>
+          <div class="tw-pct ppp">26%</div>
+        </div>
+        <div class="tw-date">5.4~5 · n=501</div>
+        <div class="tw-diff wider">하정우 11%p 우세</div>
+      </div>
+
+      <div class="tw-cell">
+        <div class="tw-outlet">
+          <div class="tw-outlet-dot" style="background:var(--green)"></div>
+          MBC / 코리아리서치
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--lib);font-weight:600">하정우</div>
+          <div class="tw-bar-wrap"><div class="tw-bar dem" style="width:38%"></div></div>
+          <div class="tw-pct dem">38%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--purple);font-weight:600">한동훈</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ind" style="width:33%"></div></div>
+          <div class="tw-pct ind">33%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--con);font-weight:600">박민식</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ppp" style="width:20%"></div></div>
+          <div class="tw-pct ppp">20%</div>
+        </div>
+        <div class="tw-date">5.16~18 · n=500</div>
+        <div class="tw-diff closer">하정우-한동훈 오차범위 내</div>
+      </div>
+
+      <div class="tw-cell">
+        <div class="tw-outlet">
+          <div class="tw-outlet-dot" style="background:var(--gold)"></div>
+          중앙일보 / 케이스탯
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--lib);font-weight:600">하정우</div>
+          <div class="tw-bar-wrap"><div class="tw-bar dem" style="width:35%"></div></div>
+          <div class="tw-pct dem">35%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--purple);font-weight:600">한동훈</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ind" style="width:31%"></div></div>
+          <div class="tw-pct ind">31%</div>
+        </div>
+        <div class="tw-row">
+          <div class="tw-name" style="color:var(--con);font-weight:600">박민식</div>
+          <div class="tw-bar-wrap"><div class="tw-bar ppp" style="width:20%"></div></div>
+          <div class="tw-pct ppp">20%</div>
+        </div>
+        <div class="tw-date">5.17~19 · n=505</div>
+        <div class="tw-diff closer">하정우-한동훈 박빙</div>
+      </div>
+    </div>
+
+    <div class="featured-footer">
+      <div class="featured-footer-text">
+        🔍 <strong>핵심 질문:</strong> 한동훈 지지율이 MBC에선 33%, JTBC에선 25% — <strong>8%p 차이</strong>. 조사 방법과 시기 차이도 있지만, 어느 언론을 읽느냐에 따라 박빙으로 보이기도, 안정권으로 보이기도 합니다.
+      </div>
     </div>
   </div>
 </div>
 
-<!-- POLL DIFF TABLE -->
-<div class="poll-section">
-  <div class="section-title" style="margin-bottom:12px">같은 날 여론조사 비교</div>
-  <div class="diff-card">
-    <div class="diff-header">
-      <div class="diff-title">📅 2026년 5월 20일 — 같은 날 발표된 여론조사</div>
-      <div class="diff-sub">조사 기관이 같아도 의뢰 언론사에 따라 결과가 달라집니다</div>
+<!-- ──────────────────── -->
+<!-- 광역단체장           -->
+<!-- ──────────────────── -->
+<div class="sec">
+  <div class="sec-head">
+    <div class="sec-title gold">광역단체장 주요 격전지</div>
+    <span class="sec-badge warm">17곳 중 주목 4곳</span>
+  </div>
+
+  <div class="metro-grid">
+    <!-- 서울 -->
+    <div class="metro-card">
+      <div class="metro-head">
+        <div class="metro-region">
+          🏙️ 서울특별시장
+          <span class="metro-type">광역</span>
+          <span class="metro-race-tag clear">민주 우세</span>
+        </div>
+      </div>
+      <div class="metro-body">
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔵</span>
+              <div>
+                <div class="metro-cand-name">정원오</div>
+                <div class="metro-party">더불어민주당</div>
+              </div>
+            </div>
+            <div class="metro-pct lib">46%</div>
+          </div>
+          <div class="metro-bar-track"><div class="metro-bar-fill lib" style="width:46%"></div></div>
+        </div>
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔴</span>
+              <div>
+                <div class="metro-cand-name">오세훈</div>
+                <div class="metro-party">국민의힘</div>
+              </div>
+            </div>
+            <div class="metro-pct con">38%</div>
+          </div>
+          <div class="metro-bar-track"><div class="metro-bar-fill con" style="width:38%"></div></div>
+        </div>
+        <div class="metro-gap">
+          <span class="metro-gap-badge lib">🔵 8%p 우세</span>
+          <span class="metro-source">뉴스1/갤럽 5.12~13</span>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted);line-height:1.5">MBC/코리아리서치는 정원오 48%, 오세훈 32%로 격차 더 커. 강남권에서도 정원오 40% vs 오세훈 38%.</div>
+      </div>
     </div>
-    <div style="overflow-x:auto">
-      <table class="diff-table">
-        <thead>
-          <tr>
-            <th>의뢰 언론사</th>
-            <th class="con-h">후보 A</th>
-            <th class="lib-h">후보 B</th>
-            <th>격차</th>
-            <th>우세</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div style="font-weight:600">조선일보</div><div class="diff-outlet">보수 성향</div></td>
-            <td><span class="pct-num a">47%</span></td>
-            <td><span class="pct-num b">46%</span></td>
-            <td><span class="diff-gap">1%p</span><div class="diff-gap-label">A 우세</div></td>
-            <td><span style="font-size:18px">🔴</span></td>
-          </tr>
-          <tr>
-            <td><div style="font-weight:600">동아일보</div><div class="diff-outlet">보수 성향</div></td>
-            <td><span class="pct-num a">48%</span></td>
-            <td><span class="pct-num b">45%</span></td>
-            <td><span class="diff-gap">3%p</span><div class="diff-gap-label">A 우세</div></td>
-            <td><span style="font-size:18px">🔴</span></td>
-          </tr>
-          <tr>
-            <td><div style="font-weight:600">중앙일보</div><div class="diff-outlet">중도보수</div></td>
-            <td><span class="pct-num a">45%</span></td>
-            <td><span class="pct-num b">47%</span></td>
-            <td><span class="diff-gap">2%p</span><div class="diff-gap-label">B 우세</div></td>
-            <td><span style="font-size:18px">🔵</span></td>
-          </tr>
-          <tr>
-            <td><div style="font-weight:600">한겨레</div><div class="diff-outlet">진보 성향</div></td>
-            <td><span class="pct-num a">44%</span></td>
-            <td><span class="pct-num b">52%</span></td>
-            <td><span class="diff-gap">8%p</span><div class="diff-gap-label">B 우세</div></td>
-            <td><span style="font-size:18px">🔵</span></td>
-          </tr>
-          <tr>
-            <td><div style="font-weight:600">경향신문</div><div class="diff-outlet">진보 성향</div></td>
-            <td><span class="pct-num a">43%</span></td>
-            <td><span class="pct-num b">53%</span></td>
-            <td><span class="diff-gap">10%p</span><div class="diff-gap-label">B 우세</div></td>
-            <td><span style="font-size:18px">🔵</span></td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- 부산 -->
+    <div class="metro-card hot-race">
+      <div class="metro-head">
+        <div class="metro-region">
+          🌊 부산광역시장
+          <span class="metro-type">광역</span>
+          <span class="metro-race-tag tight">오차범위 내</span>
+        </div>
+      </div>
+      <div class="metro-body">
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔵</span>
+              <div>
+                <div class="metro-cand-name">전재수</div>
+                <div class="metro-party">더불어민주당</div>
+              </div>
+            </div>
+            <div class="metro-pct lib">43%</div>
+          </div>
+          <div class="metro-bar-track"><div class="metro-bar-fill lib" style="width:43%"></div></div>
+        </div>
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔴</span>
+              <div>
+                <div class="metro-cand-name">박형준</div>
+                <div class="metro-party">국민의힘</div>
+              </div>
+            </div>
+            <div class="metro-pct con">41%</div>
+          </div>
+          <div class="metro-bar-track"><div class="metro-bar-fill con" style="width:41%"></div></div>
+        </div>
+        <div class="metro-gap">
+          <span class="metro-gap-badge tight">⚡ 2%p 박빙</span>
+          <span class="metro-source">뉴스1/갤럽 5.12~13</span>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted);line-height:1.5">중앙일보는 전재수 42% vs 박형준 35%로 다소 차이. 부산 북갑 보궐선거 분위기가 시장 선거에도 영향.</div>
+      </div>
     </div>
-    <div style="padding:14px 22px;background:rgba(245,158,11,.04);border-top:1px solid var(--border)">
-      <div style="font-size:12px;color:var(--text2);line-height:1.7">
-        💡 <strong style="color:var(--gold)">같은 날, 최대 10%p 차이.</strong> 어느 여론조사를 믿어야 할까요? 뉴스저울은 편집하지 않고 나란히 보여줍니다.
+
+    <!-- 대구 -->
+    <div class="metro-card hot-race">
+      <div class="metro-head">
+        <div class="metro-region">
+          🌶️ 대구광역시장
+          <span class="metro-type">광역</span>
+          <span class="metro-race-tag tight">역대급 접전</span>
+        </div>
+      </div>
+      <div class="metro-body">
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔵</span>
+              <div>
+                <div class="metro-cand-name">김부겸</div>
+                <div class="metro-party">더불어민주당</div>
+              </div>
+            </div>
+            <div class="metro-pct lib">44%</div>
+          </div>
+          <div class="metro-bar-track"><div class="metro-bar-fill lib" style="width:44%"></div></div>
+        </div>
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔴</span>
+              <div>
+                <div class="metro-cand-name">추경호</div>
+                <div class="metro-party">국민의힘</div>
+              </div>
+            </div>
+            <div class="metro-pct con">41%</div>
+          </div>
+          <div class="metro-bar-track"><div class="metro-bar-fill con" style="width:41%"></div></div>
+        </div>
+        <div class="metro-gap">
+          <span class="metro-gap-badge tight">⚡ 3%p 오차범위</span>
+          <span class="metro-source">뉴스1/갤럽 5.12~13</span>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted);line-height:1.5">대구에서 민주당이 이기면 역사적 사건. 부동층 20%가 최대 변수. 중앙일보는 김부겸 41% vs 추경호 38%.</div>
+      </div>
+    </div>
+
+    <!-- 경기 -->
+    <div class="metro-card">
+      <div class="metro-head">
+        <div class="metro-region">
+          🌿 경기도지사
+          <span class="metro-type">광역</span>
+          <span class="metro-race-tag clear">민주 우세</span>
+        </div>
+      </div>
+      <div class="metro-body">
+        <div class="metro-row">
+          <div class="metro-cand">
+            <div class="metro-cand-info">
+              <span style="font-size:14px">🔵</span>
+              <div>
+                <div class="metro-cand-name">민주당 후보</div>
+                <div class="metro-party">더불어민주당</div>
+              </div>
+            </div>
+            <div class="metro-pct lib" style="font-size:16px">우세</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-top:6px">경기도 대부분 지역 민주당 강세. 22대 총선 이후 경기도 전반 야권 우세 구도. 경기 평택을 보궐선거(조국 출마)가 별도 이슈.</div>
+        <div class="metro-gap" style="margin-top:10px">
+          <span class="metro-gap-badge lib">민주 우세 예상</span>
+          <span class="metro-source">여론조사 종합</span>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- POLL DETAIL CARDS -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-    <div class="poll-card">
-      <div class="poll-header">
-        <div><div class="poll-source">📰 조선일보 의뢰</div><div class="poll-date">2026.05.20 · 표본 1,000명</div></div>
+<!-- ──────────────────── -->
+<!-- 보궐선거 전체        -->
+<!-- ──────────────────── -->
+<div class="sec">
+  <div class="sec-head">
+    <div class="sec-title">국회의원 보궐선거</div>
+    <span class="sec-badge hot">전국 동시 실시</span>
+  </div>
+
+  <div class="byelec-list">
+    <!-- 부산 북갑은 위에 featured로 -->
+    <div class="byelec-card featured-by">
+      <div class="byelec-head">
+        <div>
+          <div class="byelec-region">📍 부산 북구갑</div>
+          <div class="byelec-desc">이재명 대통령 당선으로 공석 · 3파전</div>
+        </div>
+        <span class="byelec-hot-badge">🔥 최대 이슈</span>
       </div>
-      <div class="poll-body">
-        <div class="poll-row">
-          <div class="poll-candidate"><span class="poll-cand-name">🔴 후보 A</span><span class="poll-cand-pct" style="color:var(--con)">47%</span></div>
-          <div class="poll-bar-track"><div class="poll-bar-fill a" style="width:47%"></div></div>
+      <div class="byelec-body">
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔵</div>
+          <div>
+            <div class="byelec-cand-name">하정우</div>
+            <div class="byelec-cand-party">민주당</div>
+          </div>
+          <div class="byelec-pct lib">38%</div>
         </div>
-        <div class="poll-row">
-          <div class="poll-candidate"><span class="poll-cand-name">🔵 후보 B</span><span class="poll-cand-pct" style="color:var(--lib)">46%</span></div>
-          <div class="poll-bar-track"><div class="poll-bar-fill b" style="width:46%"></div></div>
+        <div class="byelec-divider"></div>
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🟣</div>
+          <div>
+            <div class="byelec-cand-name">한동훈</div>
+            <div class="byelec-cand-party">무소속</div>
+          </div>
+          <div class="byelec-pct ind">33%</div>
         </div>
-        <span class="poll-gap-badge con-lead">🔴 A가 1%p 앞섬</span>
+        <div class="byelec-divider"></div>
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔴</div>
+          <div>
+            <div class="byelec-cand-name">박민식</div>
+            <div class="byelec-cand-party">국민의힘</div>
+          </div>
+          <div class="byelec-pct con">20%</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-left:auto">MBC/코리아리서치 기준</div>
+      </div>
+      <div class="byelec-insight">
+        🔍 <strong>뉴스저울 포인트:</strong> 보수 표가 한동훈+박민식으로 분열 → 하정우 어부지리 가능. 단일화 성사 시 오차범위 내 박빙. 언론사에 따라 한동훈 지지율이 25~33%로 8%p 차이.
       </div>
     </div>
-    <div class="poll-card">
-      <div class="poll-header">
-        <div><div class="poll-source">📰 한겨레 의뢰</div><div class="poll-date">2026.05.20 · 표본 1,000명</div></div>
+
+    <div class="byelec-card">
+      <div class="byelec-head">
+        <div>
+          <div class="byelec-region">📍 경기 평택을</div>
+          <div class="byelec-desc">조국 출마 · 민주vs조국혁신당 구도</div>
+        </div>
+        <span class="byelec-hot-badge">🟡 주목</span>
       </div>
-      <div class="poll-body">
-        <div class="poll-row">
-          <div class="poll-candidate"><span class="poll-cand-name">🔴 후보 A</span><span class="poll-cand-pct" style="color:var(--con)">44%</span></div>
-          <div class="poll-bar-track"><div class="poll-bar-fill a" style="width:44%"></div></div>
+      <div class="byelec-body">
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔵</div>
+          <div>
+            <div class="byelec-cand-name">김용남</div>
+            <div class="byelec-cand-party">민주당</div>
+          </div>
+          <div class="byelec-pct lib">31%</div>
         </div>
-        <div class="poll-row">
-          <div class="poll-candidate"><span class="poll-cand-name">🔵 후보 B</span><span class="poll-cand-pct" style="color:var(--lib)">52%</span></div>
-          <div class="poll-bar-track"><div class="poll-bar-fill b" style="width:52%"></div></div>
+        <div class="byelec-divider"></div>
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🟠</div>
+          <div>
+            <div class="byelec-cand-name">조국</div>
+            <div class="byelec-cand-party">조국혁신당</div>
+          </div>
+          <div class="byelec-pct" style="color:var(--orange);font-family:'Bebas Neue',cursive;font-size:24px">27%</div>
         </div>
-        <span class="poll-gap-badge lib-lead">🔵 B가 8%p 앞섬</span>
+        <div style="font-size:10px;color:var(--muted);margin-left:auto">MBC/코리아리서치 기준</div>
+      </div>
+      <div class="byelec-insight">
+        🔍 야권 분열 구도. 조국 출마로 진보표 분산. 국민의힘 어부지리 가능성 있어 최종 결과 예측 어려움.
+      </div>
+    </div>
+
+    <div class="byelec-card">
+      <div class="byelec-head">
+        <div>
+          <div class="byelec-region">📍 경기 하남갑</div>
+          <div class="byelec-desc">민주 우세 지역</div>
+        </div>
+      </div>
+      <div class="byelec-body">
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔵</div>
+          <div>
+            <div class="byelec-cand-name">이광재</div>
+            <div class="byelec-cand-party">민주당</div>
+          </div>
+          <div class="byelec-pct lib">우세</div>
+        </div>
+        <div class="byelec-divider"></div>
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔴</div>
+          <div>
+            <div class="byelec-cand-name">이용</div>
+            <div class="byelec-cand-party">국민의힘</div>
+          </div>
+          <div class="byelec-pct con" style="font-size:16px">추격</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-left:auto">MBC 조사 오차범위 밖</div>
+      </div>
+      <div class="byelec-insight">민주 우세이나 오차범위 밖 수준. 하남시 갑은 경기도 내 상대적으로 보수 표심 강한 편.</div>
+    </div>
+
+    <div class="byelec-card">
+      <div class="byelec-head">
+        <div>
+          <div class="byelec-region">📍 인천 연수갑</div>
+          <div class="byelec-desc">박찬대 의원 당선으로 공석</div>
+        </div>
+      </div>
+      <div class="byelec-body">
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔵</div>
+          <div>
+            <div class="byelec-cand-name">민주당 후보</div>
+            <div class="byelec-cand-party">더불어민주당</div>
+          </div>
+          <div class="byelec-pct lib" style="font-size:16px">박찬대 텃밭</div>
+        </div>
+        <div class="byelec-divider"></div>
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔴</div>
+          <div>
+            <div class="byelec-cand-name">박종진</div>
+            <div class="byelec-cand-party">국민의힘 (단수공천)</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-left:auto">여론조사 미집계</div>
+      </div>
+    </div>
+
+    <div class="byelec-card">
+      <div class="byelec-head">
+        <div>
+          <div class="byelec-region">📍 전북 군산·김제·부안 을</div>
+          <div class="byelec-desc">위성곤 도지사 출마로 공석</div>
+        </div>
+      </div>
+      <div class="byelec-body">
+        <div class="byelec-cand-row">
+          <div style="font-size:13px">🔵</div>
+          <div>
+            <div class="byelec-cand-name">민주당</div>
+            <div class="byelec-cand-party">전통 야권 강세 지역</div>
+          </div>
+          <div class="byelec-pct lib" style="font-size:16px">강세</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-left:auto">조국혁신당 무공천 여부 변수</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- POLICY COMPARISON -->
-<div class="policy-section">
-  <div class="section-title">핵심 공약 수치 비교</div>
-  <div class="policy-card">
-    <div class="policy-header">
-      <div class="policy-title">📋 후보별 핵심 공약 — 숫자로 비교</div>
-      <div class="policy-sub">말이 아닌 숫자로 후보의 공약을 비교합니다</div>
+<!-- ──────────────────── -->
+<!-- 기초단체장 주요격전  -->
+<!-- ──────────────────── -->
+<div class="sec">
+  <div class="sec-head">
+    <div class="sec-title green">기초단체장 주요 격전지</div>
+    <span class="sec-badge" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:var(--green)">226곳 중 주목</span>
+  </div>
+
+  <div class="basic-grid">
+    <div class="basic-card issue">
+      <div class="basic-region">🏙️ 서울 강남구청장</div>
+      <div class="basic-type">기초단체장</div>
+      <div class="basic-vs">
+        <span class="basic-cand con">국민의힘</span>
+        <span class="basic-vs-dot">vs</span>
+        <span class="basic-cand lib">민주당</span>
+      </div>
+      <span class="basic-status issue">보수 텃밭 이변 가능?</span>
+      <div class="basic-note">전통 보수 강세지만 2022년보다 민주 득표 상승. 부동산 이슈가 변수.</div>
     </div>
-    <div style="overflow-x:auto">
-      <table class="policy-table">
-        <thead>
-          <tr>
-            <th>분야</th>
-            <th class="ah">🔴 후보 A</th>
-            <th class="bh">🔵 후보 B</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>최저임금</td>
-            <td>
-              <span class="policy-num a">12,000원</span>
-              <span class="policy-tag keep">동결 검토</span>
-            </td>
-            <td>
-              <span class="policy-num b">13,500원</span>
-              <span class="policy-tag up">12.5% 인상</span>
-            </td>
-          </tr>
-          <tr>
-            <td>법인세</td>
-            <td>
-              <span class="policy-num a">22%→20%</span>
-              <span class="policy-tag down">2%p 인하</span>
-            </td>
-            <td>
-              <span class="policy-num b">22% 유지</span>
-              <span class="policy-tag keep">현행 유지</span>
-            </td>
-          </tr>
-          <tr>
-            <td>부동산 취득세</td>
-            <td>
-              <span class="policy-num a">최대 50% 감면</span>
-              <span class="policy-tag down">완화</span>
-            </td>
-            <td>
-              <span class="policy-num b">현행 유지</span>
-              <span class="policy-tag keep">유지</span>
-            </td>
-          </tr>
-          <tr>
-            <td>국방 예산</td>
-            <td>
-              <span class="policy-num a">GDP 3%</span>
-              <span class="policy-tag up">대폭 증액</span>
-            </td>
-            <td>
-              <span class="policy-num b">GDP 2.5%</span>
-              <span class="policy-tag up">소폭 증액</span>
-            </td>
-          </tr>
-          <tr>
-            <td>기본소득</td>
-            <td>
-              <span class="policy-num a">반대</span>
-              <span class="policy-tag keep">도입 불가</span>
-            </td>
-            <td>
-              <span class="policy-num b">월 50만원</span>
-              <span class="policy-tag bold">단계적 도입</span>
-            </td>
-          </tr>
-          <tr>
-            <td>원전 정책</td>
-            <td>
-              <span class="policy-num a">신규 건설</span>
-              <span class="policy-tag up">원전 확대</span>
-            </td>
-            <td>
-              <span class="policy-num b">재생에너지 전환</span>
-              <span class="policy-tag bold">탈원전</span>
-            </td>
-          </tr>
-          <tr>
-            <td>건강보험료</td>
-            <td>
-              <span class="policy-num a">동결</span>
-              <span class="policy-tag keep">현행 유지</span>
-            </td>
-            <td>
-              <span class="policy-num b">소득 상한선 확대</span>
-              <span class="policy-tag bold">보장 강화</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+    <div class="basic-card">
+      <div class="basic-region">🌊 부산 해운대구청장</div>
+      <div class="basic-type">기초단체장</div>
+      <div class="basic-vs">
+        <span class="basic-cand con">국민의힘</span>
+        <span class="basic-vs-dot">vs</span>
+        <span class="basic-cand lib">민주당</span>
+      </div>
+      <span class="basic-status tight">오차범위 내</span>
+      <div class="basic-note">부산시장 선거와 연동. 부산 전체 판세에 따라 움직임.</div>
     </div>
-    <div style="padding:14px 22px;background:rgba(255,255,255,.02);border-top:1px solid var(--border)">
-      <div style="font-size:11px;color:var(--muted);line-height:1.7">⚠️ 공약은 변경될 수 있습니다. 원문은 각 후보 공식 홈페이지에서 확인하세요. 뉴스저울은 중립적으로 수치만 정리합니다.</div>
+
+    <div class="basic-card issue">
+      <div class="basic-region">🌶️ 대구 수성구청장</div>
+      <div class="basic-type">기초단체장</div>
+      <div class="basic-vs">
+        <span class="basic-cand con">국민의힘</span>
+        <span class="basic-vs-dot">vs</span>
+        <span class="basic-cand lib">민주당</span>
+      </div>
+      <span class="basic-status issue">대구 변화 바로미터</span>
+      <div class="basic-note">대구시장 선거 결과와 함께 대구 민심 변화 가늠자.</div>
     </div>
+
+    <div class="basic-card">
+      <div class="basic-region">🌿 경기 성남시장</div>
+      <div class="basic-type">기초단체장</div>
+      <div class="basic-vs">
+        <span class="basic-cand lib">민주당</span>
+        <span class="basic-vs-dot">우세</span>
+      </div>
+      <span class="basic-status lib-lead">민주 강세</span>
+      <div class="basic-note">이재명 대통령 전 지역구. 민주당 텃밭으로 분류.</div>
+    </div>
+
+    <div class="basic-card issue">
+      <div class="basic-region">⛰️ 경남 창원시장</div>
+      <div class="basic-type">기초단체장</div>
+      <div class="basic-vs">
+        <span class="basic-cand con">국민의힘</span>
+        <span class="basic-vs-dot">vs</span>
+        <span class="basic-cand lib">민주당</span>
+      </div>
+      <span class="basic-status tight">경남 판세 좌우</span>
+      <div class="basic-note">경남 최대 도시. 노무현 정부 이후 경남 민주화 가능성의 상징.</div>
+    </div>
+
+    <div class="basic-card">
+      <div class="basic-region">🏔️ 전남 담양군수</div>
+      <div class="basic-type">기초단체장</div>
+      <div class="basic-vs">
+        <span class="basic-cand lib">민주</span>
+        <span class="basic-vs-dot">vs</span>
+        <span class="basic-cand ind" style="color:var(--orange)">조국혁신당</span>
+      </div>
+      <span class="basic-status issue">야권 분열 주목</span>
+      <div class="basic-note">2025년 재보선에서 조국혁신당 첫 기초단체장 배출. 재대결 구도.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;padding:12px 16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.7">
+    📌 기초단체장은 여론조사가 제한적입니다. 지역 언론 보도와 중선위 등록 여론조사 기준으로 업데이트됩니다.
   </div>
 </div>
 
-<!-- MEDIA BIAS NUMBERS -->
-<div class="bias-section">
-  <div class="section-title">미디어 편향 지수 — 긍정/부정 기사 비율</div>
+<!-- ──────────────────── -->
+<!-- 미디어 편향 분석     -->
+<!-- ──────────────────── -->
+<div class="sec">
+  <div class="sec-head">
+    <div class="sec-title">미디어 편향 지수 — 선거 보도 논조</div>
+  </div>
+
   <div class="bias-card">
-    <div class="bias-header">
-      <div class="bias-title">📊 언론사별 후보 보도 논조 분석</div>
-      <div class="bias-sub">최근 30일 기사 중 각 후보에 대한 긍정/부정 기사 비율 (AI 분석)</div>
+    <div class="bias-head">
+      <div class="bias-title">📊 언론사별 야권·여권 후보 긍정 보도 비율</div>
+      <div class="bias-sub">최근 30일 기사 AI 분석 · 6·3 지방선거 관련 보도 기준</div>
     </div>
-    <div class="bias-grid">
-      <div class="bias-outlet-block">
-        <div class="bias-outlet-name">📰 조선일보</div>
-        <div class="bias-outlet-lean con">보수 성향</div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔴 후보 A 긍정 기사</span><span class="bias-meter-pct" style="color:var(--green)">71%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:71%"></div></div>
-        </div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔵 후보 B 긍정 기사</span><span class="bias-meter-pct" style="color:var(--con)">24%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:24%"></div></div>
-        </div>
-        <div class="bias-note">후보 A 관련 기사의 71%가 긍정적 논조. 후보 B 관련 기사의 76%가 부정적 논조.</div>
-      </div>
-      <div class="bias-outlet-block">
-        <div class="bias-outlet-name">📰 한겨레</div>
-        <div class="bias-outlet-lean lib">진보 성향</div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔴 후보 A 긍정 기사</span><span class="bias-meter-pct" style="color:var(--con)">19%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:19%"></div></div>
-        </div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔵 후보 B 긍정 기사</span><span class="bias-meter-pct" style="color:var(--green)">78%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:78%"></div></div>
-        </div>
-        <div class="bias-note">후보 B 관련 기사의 78%가 긍정적 논조. 후보 A 관련 기사의 81%가 부정적 논조.</div>
-      </div>
-      <div class="bias-outlet-block">
-        <div class="bias-outlet-name">📰 중앙일보</div>
-        <div class="bias-outlet-lean con" style="color:var(--gold)">중도보수</div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔴 후보 A 긍정 기사</span><span class="bias-meter-pct" style="color:var(--green)">54%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:54%"></div></div>
-        </div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔵 후보 B 긍정 기사</span><span class="bias-meter-pct" style="color:var(--green)">48%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:48%"></div></div>
-        </div>
-        <div class="bias-note">비교적 균형 잡힌 보도. 하지만 후보 A 긍정 기사가 6%p 더 많습니다.</div>
-      </div>
-      <div class="bias-outlet-block">
-        <div class="bias-outlet-name">📺 JTBC</div>
-        <div class="bias-outlet-lean lib">진보 성향</div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔴 후보 A 긍정 기사</span><span class="bias-meter-pct" style="color:var(--con)">22%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:22%"></div></div>
-        </div>
-        <div class="bias-meter-row">
-          <div class="bias-meter-label"><span>🔵 후보 B 긍정 기사</span><span class="bias-meter-pct" style="color:var(--green)">74%</span></div>
-          <div class="bias-bar-track"><div class="bias-bar-pos" style="width:74%"></div></div>
-        </div>
-        <div class="bias-note">후보 B에 대한 우호적 보도가 뚜렷합니다. 한겨레와 유사한 패턴.</div>
-      </div>
+    <div class="bias-table-wrap">
+      <table class="bias-table">
+        <thead>
+          <tr>
+            <th>언론사</th>
+            <th>성향</th>
+            <th class="l">민주당 후보 긍정 기사</th>
+            <th class="c">국민의힘 후보 긍정 기사</th>
+            <th>편향 요약</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="bias-outlet-name">📰 조선일보</div><div class="bias-lean con">보수</div></td>
+            <td><span style="font-size:16px">🔴</span></td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:22%"></div></div>
+                <div class="bias-pct lo">22%</div>
+              </div>
+            </td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:68%"></div></div>
+                <div class="bias-pct hi">68%</div>
+              </div>
+            </td>
+            <td style="font-size:11px;color:var(--muted)">여권 후보 우호 보도 3배</td>
+          </tr>
+          <tr>
+            <td><div class="bias-outlet-name">📰 동아일보</div><div class="bias-lean con">보수</div></td>
+            <td><span style="font-size:16px">🔴</span></td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:26%"></div></div>
+                <div class="bias-pct lo">26%</div>
+              </div>
+            </td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:64%"></div></div>
+                <div class="bias-pct hi">64%</div>
+              </div>
+            </td>
+            <td style="font-size:11px;color:var(--muted)">조선보다 다소 균형</td>
+          </tr>
+          <tr>
+            <td><div class="bias-outlet-name">📰 중앙일보</div><div class="bias-lean mid">중도보수</div></td>
+            <td><span style="font-size:16px">🟡</span></td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:44%"></div></div>
+                <div class="bias-pct" style="color:var(--gold)">44%</div>
+              </div>
+            </td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:52%"></div></div>
+                <div class="bias-pct" style="color:var(--gold)">52%</div>
+              </div>
+            </td>
+            <td style="font-size:11px;color:var(--muted)">비교적 균형, 여권 소폭 우호</td>
+          </tr>
+          <tr>
+            <td><div class="bias-outlet-name">📰 한겨레</div><div class="bias-lean lib">진보</div></td>
+            <td><span style="font-size:16px">🔵</span></td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:72%"></div></div>
+                <div class="bias-pct hi">72%</div>
+              </div>
+            </td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:21%"></div></div>
+                <div class="bias-pct lo">21%</div>
+              </div>
+            </td>
+            <td style="font-size:11px;color:var(--muted)">야권 후보 우호 보도 3배</td>
+          </tr>
+          <tr>
+            <td><div class="bias-outlet-name">📺 JTBC</div><div class="bias-lean lib">진보 성향</div></td>
+            <td><span style="font-size:16px">🔵</span></td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:67%"></div></div>
+                <div class="bias-pct hi">67%</div>
+              </div>
+            </td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:24%"></div></div>
+                <div class="bias-pct lo">24%</div>
+              </div>
+            </td>
+            <td style="font-size:11px;color:var(--muted)">한겨레와 유사 패턴</td>
+          </tr>
+          <tr>
+            <td><div class="bias-outlet-name">📺 KBS</div><div class="bias-lean mid">공영방송</div></td>
+            <td><span style="font-size:16px">🟡</span></td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:52%"></div></div>
+                <div class="bias-pct" style="color:var(--gold)">52%</div>
+              </div>
+            </td>
+            <td>
+              <div class="bias-bar-row">
+                <div class="bias-bar-track"><div class="bias-bar-pos" style="width:47%"></div></div>
+                <div class="bias-pct" style="color:var(--gold)">47%</div>
+              </div>
+            </td>
+            <td style="font-size:11px;color:var(--muted)">가장 균형적</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="bias-summary">
-      <div class="bias-summary-text">
-        💡 <strong>뉴스저울 분석:</strong> 보수 언론(조선·동아)은 후보 A 긍정 기사를 평균 <strong>69%</strong> 게재하는 반면, 진보 언론(한겨레·JTBC)은 <strong>21%</strong>에 그칩니다. 같은 후보를 두고 언론사마다 <strong>48%p</strong>의 긍정/부정 비율 차이가 납니다. 어느 언론만 읽느냐에 따라 완전히 다른 후보를 보게 됩니다.
-      </div>
+    <div class="bias-summary-row">
+      💡 <strong>뉴스저울 요약:</strong> 보수 언론(조선·동아)과 진보 언론(한겨레·JTBC)의 야권 후보 긍정 보도 비율 차이는 평균 <strong>46%p</strong>. 내가 읽는 언론에 따라 완전히 다른 후보를 보게 됩니다. 중앙일보와 KBS가 비교적 중간 지점에 위치합니다.
     </div>
   </div>
+</div>
+
+<!-- 면책 조항 -->
+<div class="disclaimer">
+  ⚠️ <strong>면책 조항:</strong> 여론조사 수치는 각 언론사·조사기관이 공개한 자료 기반입니다. 조사 시기, 표본, 방법론에 따라 차이가 있으며 실제 선거 결과와 다를 수 있습니다. 미디어 편향 수치는 AI 분석 추정치입니다. 원문은 중앙선거여론조사심의위원회(nesdc.go.kr)에서 확인하세요.
 </div>
 
 <!-- SHARE -->
-<div class="share-section">
-  <div class="share-card">
-    <div class="share-title">이 데이터, 알려야 합니다</div>
-    <div class="share-sub">조선일보와 한겨레가 같은 날 같은 후보 지지율을 10%p 다르게 보도합니다.<br>주변에 알려주세요. 양쪽을 다 봐야 합니다.</div>
-    <div class="share-btns">
-      <button class="share-btn share-thread" onclick="shareThread()">스레드에 공유</button>
-      <button class="share-btn share-x" onclick="shareX()">𝕏 트위터 공유</button>
-      <button class="share-btn share-copy" onclick="copyUrl()">🔗 링크 복사</button>
-    </div>
+<div class="share-card">
+  <div class="share-title">이 데이터, 알려야 합니다</div>
+  <div class="share-sub">같은 부산 북갑 여론조사, 의뢰 언론사에 따라 8%p 차이.<br>어느 언론만 읽느냐에 따라 완전히 다른 선거가 보입니다.</div>
+  <div class="share-btns">
+    <button class="share-btn share-thread" onclick="shareThread()">스레드 공유</button>
+    <button class="share-btn share-x" onclick="shareX()">𝕏 공유</button>
+    <button class="share-btn share-copy" onclick="copyUrl()">🔗 링크 복사</button>
   </div>
 </div>
 
-
-<!-- 선거 뉴스 비교 피드 -->
-<div class="bias-section" id="electionFeedSection">
-  <div class="section-title">📰 오늘의 선거 보도 비교</div>
-  <div id="electionFeed" style="display:flex;flex-direction:column;gap:12px">
-    <div style="text-align:center;padding:30px;color:var(--muted);font-size:14px">불러오는 중...</div>
-  </div>
-</div>
-
+</div><!-- /wrap -->
 <div class="toast" id="toast"></div>
 
 <script>
-
-// ── SUPABASE ──
-const SUPA_URL = 'https://xlxztrnpmzklbnyfkrze.supabase.co';
-const SUPA_KEY = 'sb_publishable_RYLor2fbXqj4aHhSW0vCsw_7ZfP2a58';
-
-function timeAgo(ts) {
-  const d = (Date.now() - new Date(ts)) / 1000;
-  if(d<60) return '방금'; if(d<3600) return Math.floor(d/60)+'분 전';
-  if(d<86400) return Math.floor(d/3600)+'시간 전'; return Math.floor(d/86400)+'일 전';
-}
-
-async function loadElectionFeed() {
-  try {
-    const r = await fetch(SUPA_URL + '/rest/v1/comparisons_kr?election_related=eq.true&order=created_at.desc&limit=10', {
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
-    });
-    const data = await r.json();
-    const feed = document.getElementById('electionFeed');
-    if (!data || !data.length) {
-      feed.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px">선거 관련 비교 데이터를 수집 중입니다.</div>';
-      return;
-    }
-    feed.innerHTML = data.map((c, i) => `
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeIn .3s ease both;animation-delay:${i*.06}s">
-        <div style="padding:16px 20px 10px">
-          <div style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:8px">${c.topic}</div>
-          <div style="font-size:10px;color:var(--muted)">${c.created_at?timeAgo(c.created_at):'오늘'}</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr">
-          <div style="padding:14px 18px;background:var(--con-soft);border-top:1px solid var(--border)">
-            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--con);margin-bottom:6px">${c.conservative_source||'보수 언론'}</div>
-            <div style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:8px">${c.conservative_summary||''}</div>
-            ${c.conservative_url?`<a href="${c.conservative_url}" target="_blank" style="font-size:11px;color:var(--muted);text-decoration:none">원문 보기 →</a>`:''}
-          </div>
-          <div style="padding:14px 18px;background:var(--lib-soft);border-top:1px solid var(--border);border-left:1px solid var(--border)">
-            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lib);margin-bottom:6px">${c.liberal_source||'진보 언론'}</div>
-            <div style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:8px">${c.liberal_summary||''}</div>
-            ${c.liberal_url?`<a href="${c.liberal_url}" target="_blank" style="font-size:11px;color:var(--muted);text-decoration:none">원문 보기 →</a>`:''}
-          </div>
-        </div>
-        ${c.ai_analysis?`<div style="padding:12px 18px;border-top:1px solid var(--border);background:rgba(94,62,161,.04)"><span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple)">✦ AI 분석</span><div style="font-size:13px;color:var(--text2);line-height:1.75;margin-top:4px">${c.ai_analysis}</div></div>`:''}
-      </div>`).join('');
-  } catch(e) {
-    document.getElementById('electionFeed').innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">데이터 로드 실패</div>';
-  }
-}
-
-loadElectionFeed();
-
 // THEME
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('nj_theme', next);
-  document.getElementById('themeBtn').textContent = next==='dark'?'☀️':'🌙';
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('nj_theme',next);
+  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
 }
-const t = localStorage.getItem('nj_theme')||'light';
-document.documentElement.setAttribute('data-theme', t);
-document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙';
+const t=localStorage.getItem('nj_theme')||'dark';
+document.documentElement.setAttribute('data-theme',t);
+document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙';
 
 // D-DAY
-const election = new Date('2026-06-03');
-const today = new Date();
-const diff = Math.ceil((election-today)/86400000);
-const ddayText = diff>0?'D-'+diff:diff===0?'D-DAY':'종료';
-document.getElementById('ddayNum').textContent = ddayText;
-document.getElementById('navDday').textContent = '선거 '+ddayText;
-
-// SCALE ANIMATION
-function changeScale(btn, name, pctA, pctB, lean) {
-  document.querySelectorAll('.scale-outlet-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('scaleOutletName').textContent = name;
-  document.getElementById('scalePctA').textContent = pctA+'%';
-  document.getElementById('scalePctB').textContent = pctB+'%';
-  const beam = document.getElementById('scaleBeam');
-  const diff = pctA - pctB;
-  beam.className = 'scale-beam';
-  setTimeout(() => {
-    if (diff > 2) beam.classList.add('lean-con');
-    else if (diff < -2) beam.classList.add('lean-lib');
-    else beam.classList.add('balanced');
-  }, 50);
-  const resultEl = document.getElementById('scaleResult');
-  if (Math.abs(diff) <= 1) {
-    resultEl.innerHTML = `<strong>박빙입니다</strong> — ${name} (2026.05.20)`;
-  } else if (diff > 0) {
-    resultEl.innerHTML = `<strong style="color:var(--con)">후보 A가 ${diff}%p 앞섭니다</strong> — ${name} (2026.05.20)`;
-  } else {
-    resultEl.innerHTML = `<strong style="color:var(--lib)">후보 B가 ${Math.abs(diff)}%p 앞섭니다</strong> — ${name} (2026.05.20)`;
-  }
-}
-
-// Init scale animation
-setTimeout(() => {
-  const beam = document.getElementById('scaleBeam');
-  beam.classList.add('lean-con');
-}, 500);
+const election=new Date('2026-06-03');
+const today=new Date();
+const diff=Math.ceil((election-today)/86400000);
+const ddayText=diff>0?'D-'+diff:diff===0?'D-DAY':'종료';
+document.getElementById('ddayNum').textContent=ddayText;
+document.getElementById('navDday').textContent='선거 '+ddayText;
+if(document.getElementById('featDday')) document.getElementById('featDday').textContent=diff>0?diff:diff===0?'DAY':'종료';
 
 // SHARE
-function shareThread() {
-  const text = `충격 — 같은 날 같은 후보 지지율이 언론사마다 이렇게 다릅니다.\n\n📰 조선일보 의뢰: 후보A 47% vs 후보B 46%\n📰 한겨레 의뢰: 후보A 44% vs 후보B 52%\n\n최대 10%p 차이. 어느 언론을 읽느냐에 따라 다른 결과를.\n\n전체 비교 → newsjeoul.co.kr/election`;
-  window.open('https://www.threads.net/intent/post?text=' + encodeURIComponent(text), '_blank');
+function shareThread(){
+  const text=`충격 — 같은 날 부산 북갑 여론조사, 언론사마다 이렇게 다릅니다.\n\n📊 MBC: 하정우 38% / 한동훈 33%\n📊 JTBC: 하정우 37% / 한동훈 25%\n\n같은 지역구, 최대 8%p 차이. 어느 언론을 읽느냐에 따라 다른 선거가 보입니다.\n\n전체 분석 → newsjeoul.co.kr/election`;
+  window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(text),'_blank');
 }
-function shareX() {
-  const text = `같은 날, 같은 후보 지지율이 언론사마다 최대 10%p 차이납니다.\n\n보수 언론 vs 진보 언론 여론조사 전체 비교\n→ newsjeoul.co.kr/election`;
-  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+function shareX(){
+  const text=`같은 날 같은 선거구 여론조사, 언론사마다 8%p 차이.\n\n6·3 선거 미디어 편향 전체 분석\n→ newsjeoul.co.kr/election`;
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
 }
-function copyUrl() {
+function copyUrl(){
   navigator.clipboard.writeText('https://newsjeoul.co.kr/election').then(()=>showToast('🔗 링크 복사됨!'));
 }
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2500);
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 </script>
 </body>
 </html>
-
