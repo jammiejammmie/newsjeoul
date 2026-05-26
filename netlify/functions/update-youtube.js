@@ -5,17 +5,16 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
 const CHANNELS = [
   // 보수
-  { channel_id: 'UCZXbfwTnfvOtFCDZVCVhxbQ', channel_name: '가로세로연구소', lean: 'conservative' },
-  { channel_id: 'UCFOp6OYOFBVL-j-pvFd7N6Q', channel_name: '신의한수', lean: 'conservative' },
-  { channel_id: 'UCNAf1k0yIjyGu3k9BwAg3lg', channel_name: '조선일보TV', lean: 'conservative' },
-  { channel_id: 'UCjnFbOCBMfUYJTPY-6VFa5w', channel_name: 'TV조선', lean: 'conservative' },
-  { channel_id: 'UC2zVNMWWcBDRSjIxoAIXbRQ', channel_name: '펜앤드마이크', lean: 'conservative' },
+  { channel_id: 'UC0M-_02RJqMlGTKUjF1WhJg', channel_name: '가로세로연구소', lean: 'conservative' },
+  { channel_id: 'UCgOLQwRv1r2m9mhE1tfsn3Q', channel_name: '신의한수', lean: 'conservative' },
+  { channel_id: 'UCdp4_yTBhQmB8E339Lafzow', channel_name: '조선일보TV', lean: 'conservative' },
+  { channel_id: 'UCWlV3Lz_55UaX4JsMj-z__Q', channel_name: 'TV조선뉴스', lean: 'conservative' },
   // 진보
-  { channel_id: 'UCrOGCRyGfWwxSDP_iYqKO0w', channel_name: '김어준의겸손은힘들다', lean: 'liberal' },
+  { channel_id: 'UCRr5JaYMJPsEMFGrFkEFAZg', channel_name: '김어준의겸손은힘들다', lean: 'liberal' },
   { channel_id: 'UCzCi8OHJdioqTsLXkL0frog', channel_name: '열린공감TV', lean: 'liberal' },
-  { channel_id: 'UCGgJZpXXFGQFHJR1EFfAc6Q', channel_name: '한겨레TV', lean: 'liberal' },
-  { channel_id: 'UCsJ6RuBiPiZfGmCoBxFPesg', channel_name: '매불쇼', lean: 'liberal' },
-  { channel_id: 'UC2TV-xSRjoHhTU3CRGpS9NQ', channel_name: 'JTBC News', lean: 'liberal' },
+  { channel_id: 'UC8wAMPFoJVXRH_PBhMcXMlQ', channel_name: '한겨레TV', lean: 'liberal' },
+  { channel_id: 'UCBCnVEzBCZrMgHnZLRPpOFg', channel_name: '매불쇼', lean: 'liberal' },
+  { channel_id: 'UCcQTRi69dsVYHN3exePtZ1A', channel_name: 'KBS뉴스', lean: 'liberal' },
 ];
 
 async function getChannelInfo(channelId) {

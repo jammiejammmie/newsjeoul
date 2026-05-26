@@ -275,6 +275,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         <div class="bias-meter-label" style="color:var(--con)">보수</div>
       </div>
       <div class="bias-today-text" id="biasTodayText">뉴스를 불러온 후 편향 지수가 표시됩니다.</div>
+      <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
+        <button class="card-btn" onclick="shareBias('thread')">스레드 공유</button>
+        <button class="card-btn" onclick="shareBias('x')">𝕏 공유</button>
+        <button class="card-btn" onclick="shareBias('copy')">🔗 복사</button>
+      </div>
     </div>
   </div>
 
@@ -287,6 +292,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <div class="quiz-card">
       <div class="quiz-head">
         <div class="quiz-title">이 기사, 어느 언론사일까요?</div>
+        <div style="display:flex;gap:4px">
+          <button class="card-btn" onclick="shareQuiz('thread')">스레드</button>
+          <button class="card-btn" onclick="shareQuiz('x')">𝕏</button>
+          <button class="card-btn" onclick="shareQuiz('copy')">🔗</button>
+        </div>
       </div>
       <div class="quiz-body">
         <div class="quiz-q">다음 헤드라인을 쓴 언론사를 맞춰보세요:</div>
@@ -316,6 +326,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   <div class="report-section">
     <div class="section-header">
       <div class="section-title">📊 이번 주 언론사 리포트</div>
+      <div style="display:flex;gap:4px">
+        <button class="card-btn" onclick="shareReport('thread')">스레드</button>
+        <button class="card-btn" onclick="shareReport('x')">𝕏</button>
+        <button class="card-btn" onclick="shareReport('copy')">🔗</button>
+      </div>
     </div>
     <div class="report-grid">
       <div class="report-card">
@@ -544,9 +559,44 @@ function loadTracker(items){
       <div class="tracker-bias">
         <div class="tracker-bias-bar"><div class="tracker-bias-fill" style="width:${item.bias_score||50}%"></div></div>
       </div>
+      <div style="display:flex;gap:4px;margin-left:8px">
+        <button class="card-btn" onclick="shareTracker('thread','${item.title.replace(/'/g,"\\'")}')">스레드</button>
+        <button class="card-btn" onclick="shareTracker('x','${item.title.replace(/'/g,"\\'")}')">𝕏</button>
+        <button class="card-btn" onclick="shareTracker('copy','${item.title.replace(/'/g,"\\'")}')">🔗</button>
+      </div>
     </div>
   `).join('');
   document.getElementById('trackerList').innerHTML=html;
+}
+
+function shareBias(type){
+  const text=document.getElementById('biasTodayText').textContent;
+  const msg=`오늘 한국 언론 편향 지수: ${text}\n뉴스저울 → https://newsjeoul.co.kr`;
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(msg),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
+  else { navigator.clipboard.writeText('https://newsjeoul.co.kr').then(()=>showToast('🔗 링크 복사됨!')); }
+}
+
+function shareQuiz(type){
+  const headline=document.getElementById('quizHeadline').textContent;
+  const msg=`이 기사 어느 언론사일까요?\n"${headline}"\n\n뉴스저울 퀴즈 → https://newsjeoul.co.kr`;
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(msg),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
+  else { navigator.clipboard.writeText('https://newsjeoul.co.kr').then(()=>showToast('🔗 링크 복사됨!')); }
+}
+
+function shareReport(type){
+  const msg=`한국 언론사 편향 지수 비교 — 조선일보 vs 한겨레, 이번 주 점수는?\n뉴스저울 → https://newsjeoul.co.kr`;
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(msg),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
+  else { navigator.clipboard.writeText('https://newsjeoul.co.kr').then(()=>showToast('🔗 링크 복사됨!')); }
+}
+
+function shareTracker(type, title){
+  const msg=`🔥 오늘 이슈: "${title}"\n조중동 vs 한경오, 어떻게 다르게 보도했을까?\n뉴스저울 → https://newsjeoul.co.kr`;
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(msg),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
+  else { navigator.clipboard.writeText('https://newsjeoul.co.kr').then(()=>showToast('🔗 링크 복사됨!')); }
 }
 
 // 리포트 카드 (bias_score 기반)
