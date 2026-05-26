@@ -1,19 +1,46 @@
-// updated
-const { createClient } = require('@supabase/supabase-js');
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
+const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+async function supabaseDelete(table, gte_date) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?created_at=gte.${gte_date}`, {
+    method: 'DELETE',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    }
+  });
+  return res;
+}
+
+async function supabaseInsert(table, data) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error('Supabase insert error: ' + err);
+  }
+  return res;
+}
 
 exports.handler = async function () {
+  console.log('update-news 시작:', new Date().toISOString());
   try {
     // Claude API로 최신 뉴스 비교 가져오기
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'x-api-key': ANTHROPIC_KEY,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -46,7 +73,13 @@ category는 정치/경제/사회/국제 중 하나.`
       })
     });
 
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error('Claude API 에러: ' + err);
+    }
+
     const data = await response.json();
+    console.log('Claude 응답 받음');
 
     // 텍스트 블록 추출
     const text = data.content
@@ -54,25 +87,21 @@ category는 정치/경제/사회/국제 중 하나.`
       .map(b => b.text)
       .join('');
 
+    console.log('텍스트 추출:', text.substring(0, 200));
+
     // JSON 파싱
     const match = text.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error('JSON을 찾을 수 없습니다');
+    if (!match) throw new Error('JSON을 찾을 수 없습니다. 응답: ' + text.substring(0, 300));
     const items = JSON.parse(match[0]);
+    console.log(`파싱된 아이템 수: ${items.length}`);
 
-    // 오늘 데이터 삭제 후 새로 삽입
+    // 오늘 데이터 삭제
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    await supabaseDelete('news_kr', today.toISOString());
 
-    await supabase
-      .from('news_kr')
-      .delete()
-      .gte('created_at', today.toISOString());
-
-    const { error } = await supabase
-      .from('news_kr')
-      .insert(items);
-
-    if (error) throw error;
+    // 새 데이터 삽입
+    await supabaseInsert('news_kr', items);
 
     console.log(`뉴스 ${items.length}개 업데이트 완료`);
 
