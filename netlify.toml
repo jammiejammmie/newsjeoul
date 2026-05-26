@@ -4,6 +4,12 @@
 [functions]
   node_bundler = "esbuild"
 
+[functions."fetch-comparisons-kr"]
+  timeout = 30
+
+[functions."fetch-election-kr"]
+  timeout = 30
+
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
 
