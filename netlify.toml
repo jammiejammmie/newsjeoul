@@ -24,6 +24,7 @@
 # 매일 오전 6시 KST = 21:00 UTC (전날)
 [functions."update-youtube"]
   schedule = "0 21 * * *"
+  timeout = 60
 
 # 타임아웃 설정
 [functions."fetch-comparisons-kr"]
@@ -31,6 +32,3 @@
 
 [functions."fetch-election-kr"]
   timeout = 30
-
-[functions."update-youtube"]
-  timeout = 60
