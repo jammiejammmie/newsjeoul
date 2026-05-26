@@ -7,14 +7,15 @@ const CHANNELS = [
   // 보수
   { channel_id: 'UC0M-_02RJqMlGTKUjF1WhJg', channel_name: '가로세로연구소', lean: 'conservative' },
   { channel_id: 'UCgOLQwRv1r2m9mhE1tfsn3Q', channel_name: '신의한수', lean: 'conservative' },
-  { channel_id: 'UCdp4_yTBhQmB8E339Lafzow', channel_name: '조선일보TV', lean: 'conservative' },
   { channel_id: 'UCWlV3Lz_55UaX4JsMj-z__Q', channel_name: 'TV조선뉴스', lean: 'conservative' },
+  { channel_id: 'UC2nFKE4pKM8EvqMcDaKMVhg', channel_name: '펜앤드마이크', lean: 'conservative' },
+  { channel_id: 'UCGkfyFLmDghQr7V6SEk5sSA', channel_name: '정규재TV', lean: 'conservative' },
   // 진보
   { channel_id: 'UCRr5JaYMJPsEMFGrFkEFAZg', channel_name: '김어준의겸손은힘들다', lean: 'liberal' },
-  { channel_id: 'UCzCi8OHJdioqTsLXkL0frog', channel_name: '열린공감TV', lean: 'liberal' },
-  { channel_id: 'UC8wAMPFoJVXRH_PBhMcXMlQ', channel_name: '한겨레TV', lean: 'liberal' },
   { channel_id: 'UCBCnVEzBCZrMgHnZLRPpOFg', channel_name: '매불쇼', lean: 'liberal' },
-  { channel_id: 'UCcQTRi69dsVYHN3exePtZ1A', channel_name: 'KBS뉴스', lean: 'liberal' },
+  { channel_id: 'UCzCi8OHJdioqTsLXkL0frog', channel_name: '열린공감TV', lean: 'liberal' },
+  { channel_id: 'UCbsaSGNFDCRdR9jZjkMqNwA', channel_name: '뉴스타파', lean: 'liberal' },
+  { channel_id: 'UC8wAMPFoJVXRH_PBhMcXMlQ', channel_name: '한겨레TV', lean: 'liberal' },
 ];
 
 async function getChannelInfo(channelId) {
