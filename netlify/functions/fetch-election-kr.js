@@ -1,3 +1,4 @@
+// updated
 // netlify/functions/fetch-election-kr.js
 // 6월 3일 지방선거 특집 - 후보 관련 보도 논조 자동 분석
 

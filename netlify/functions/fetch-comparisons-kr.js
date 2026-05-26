@@ -1,3 +1,4 @@
+// updated
 // netlify/functions/fetch-comparisons-kr.js
 const { createClient } = require('@supabase/supabase-js');
 

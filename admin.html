@@ -10,8 +10,7 @@
 body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .wrap{width:100%;max-width:520px}
 .logo{font-size:24px;font-weight:700;margin-bottom:4px}
-.logo .c{color:#a83225}
-.logo .l{color:#1a4f8c}
+.logo .c{color:#a83225}.logo .l{color:#1a4f8c}
 .subtitle{font-size:12px;color:#7a756c;margin-bottom:28px}
 #loginSection{background:#fff;border:1px solid #e4dfd4;border-radius:16px;padding:24px}
 .login-title{font-size:14px;font-weight:600;color:#7a756c;margin-bottom:16px}
@@ -84,12 +83,12 @@ body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-
 
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-val" id="statComparisons">—</div>
-        <div class="stat-label">총 비교 건수</div>
+        <div class="stat-val" id="statNews">—</div>
+        <div class="stat-label">오늘 뉴스 비교</div>
       </div>
       <div class="stat-card">
-        <div class="stat-val" id="statElection">—</div>
-        <div class="stat-label">선거 관련 분석</div>
+        <div class="stat-val" id="statPolls">—</div>
+        <div class="stat-label">여론조사 데이터</div>
       </div>
     </div>
 
@@ -99,16 +98,12 @@ body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-
         <div class="action-icon">⚡</div>
         <div class="action-info">
           <h3>전체 실행</h3>
-          <p>뉴스 비교 + 선거 분석을 순서대로 실행합니다.</p>
+          <p>뉴스 비교 + 선거 여론조사를 순서대로 실행합니다.</p>
         </div>
       </div>
       <button class="run-btn both" id="runBothBtn" onclick="runBoth()">
         <span>⚡ 전체 실행</span>
       </button>
-      <div class="force-toggle">
-        <input type="checkbox" class="toggle-checkbox" id="forceBoth">
-        <label class="toggle-label" for="forceBoth">강제 실행 (오늘 중복 체크 무시)</label>
-      </div>
     </div>
 
     <!-- 뉴스 비교 -->
@@ -117,36 +112,28 @@ body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-
         <div class="action-icon">📰</div>
         <div class="action-info">
           <h3>뉴스 비교</h3>
-          <p>조중동 vs 한경오 RSS 수집 + AI 비교 분석</p>
+          <p>조중동 vs 한경오 — Claude AI 웹서치 기반 분석</p>
         </div>
-        <div class="action-schedule">매일 오후 6시</div>
+        <div class="action-schedule">오전 9시 / 오후 9시</div>
       </div>
       <button class="run-btn compare" id="runCompBtn" onclick="runComparisons()">
         <span>▶ 지금 실행</span>
       </button>
-      <div class="force-toggle">
-        <input type="checkbox" class="toggle-checkbox" id="forceComp">
-        <label class="toggle-label" for="forceComp">강제 실행</label>
-      </div>
     </div>
 
-    <!-- 선거 분석 -->
+    <!-- 선거 여론조사 -->
     <div class="action-card">
       <div class="action-header">
         <div class="action-icon">🗳️</div>
         <div class="action-info">
-          <h3>선거 특집 분석</h3>
-          <p>6월 3일 지방선거 관련 보도 논조 자동 분석</p>
+          <h3>선거 여론조사</h3>
+          <p>6·3 지방선거 최신 여론조사 자동 수집</p>
         </div>
-        <div class="action-schedule">매일 오후 7시</div>
+        <div class="action-schedule">오전 9시 / 오후 9시</div>
       </div>
       <button class="run-btn election" id="runElectionBtn" onclick="runElection()">
         <span>▶ 지금 실행</span>
       </button>
-      <div class="force-toggle">
-        <input type="checkbox" class="toggle-checkbox" id="forceElection">
-        <label class="toggle-label" for="forceElection">강제 실행</label>
-      </div>
     </div>
 
     <!-- 로그 -->
@@ -164,6 +151,8 @@ body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-
 
 <script>
 const SITE_URL = window.location.origin;
+const SUPABASE_URL = 'https://xlxztrnpmzklbnyfkrze.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RYLor2fbXqj4aHhSW0vCsw_7ZfP2a58';
 let adminKey = '';
 
 function login() {
@@ -192,8 +181,8 @@ window.addEventListener('load', () => {
     document.getElementById('adminKey').value = saved;
     document.getElementById('loginSection').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    loadStats();
     addLog('info', '자동 로그인');
+    loadStats();
   }
 });
 
@@ -214,8 +203,8 @@ function setLoading(btn, loading, label) {
   btn.innerHTML = loading ? '<div class="spinner"></div><span>실행 중...</span>' : `<span>${label}</span>`;
 }
 
-async function callFunction(fnName, force) {
-  const url = `${SITE_URL}/.netlify/functions/${fnName}?force=${force}`;
+async function callFunction(fnName) {
+  const url = `${SITE_URL}/.netlify/functions/${fnName}`;
   addLog('info', `${fnName} 실행 중...`);
   const res = await fetch(url, { headers: { 'x-admin-key': adminKey } });
   return res;
@@ -223,15 +212,13 @@ async function callFunction(fnName, force) {
 
 async function runComparisons() {
   const btn = document.getElementById('runCompBtn');
-  const force = document.getElementById('forceComp').checked;
   setLoading(btn, true);
   try {
-    const res = await callFunction('fetch-comparisons-kr', force);
+    const res = await callFunction('fetch-comparisons-kr');
     const data = await res.json();
     if (res.status === 401) addLog('error', '❌ 관리자 키가 틀렸습니다');
     else if (res.ok) {
-      if (data.saved > 0) addLog('success', `✅ 완료! ${data.saved}건 저장: ${(data.topics||[]).join(', ')}`);
-      else addLog('warn', `⚠️ ${data.message || '저장된 항목 없음'}`);
+      addLog('success', `✅ 뉴스 비교 ${data.saved || 0}건 저장: ${(data.topics||[]).slice(0,3).join(', ')}`);
       loadStats();
     } else addLog('error', `❌ 오류: ${data.error}`);
   } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
@@ -240,15 +227,13 @@ async function runComparisons() {
 
 async function runElection() {
   const btn = document.getElementById('runElectionBtn');
-  const force = document.getElementById('forceElection').checked;
   setLoading(btn, true);
   try {
-    const res = await callFunction('fetch-election-kr', force);
+    const res = await callFunction('fetch-election-kr');
     const data = await res.json();
     if (res.status === 401) addLog('error', '❌ 관리자 키가 틀렸습니다');
     else if (res.ok) {
-      if (data.saved > 0) addLog('success', `✅ 완료! 선거 분석 ${data.saved}건 저장`);
-      else addLog('warn', `⚠️ ${data.message || '선거 관련 기사 없음'}`);
+      addLog('success', `✅ 여론조사 ${data.saved || 0}건 저장`);
       loadStats();
     } else addLog('error', `❌ 오류: ${data.error}`);
   } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
@@ -257,21 +242,20 @@ async function runElection() {
 
 async function runBoth() {
   const btn = document.getElementById('runBothBtn');
-  const force = document.getElementById('forceBoth').checked;
   setLoading(btn, true);
   addLog('info', '⚡ 전체 실행 시작...');
   try {
-    const r1 = await callFunction('fetch-comparisons-kr', force);
+    const r1 = await callFunction('fetch-comparisons-kr');
     const d1 = await r1.json();
     if (r1.status === 401) { addLog('error', '❌ 관리자 키 오류'); setLoading(btn, false, '⚡ 전체 실행'); return; }
     if (r1.ok) addLog('success', `✅ 뉴스 비교: ${d1.saved || 0}건 저장`);
     else addLog('error', `❌ 뉴스 비교 실패: ${d1.error}`);
-    addLog('info', '3초 후 선거 분석 시작...');
+    addLog('info', '3초 후 여론조사 시작...');
     await new Promise(r => setTimeout(r, 3000));
-    const r2 = await callFunction('fetch-election-kr', force);
+    const r2 = await callFunction('fetch-election-kr');
     const d2 = await r2.json();
-    if (r2.ok) addLog('success', `✅ 선거 분석: ${d2.saved || 0}건 저장`);
-    else addLog('error', `❌ 선거 분석 실패: ${d2.error}`);
+    if (r2.ok) addLog('success', `✅ 여론조사: ${d2.saved || 0}건 저장`);
+    else addLog('error', `❌ 여론조사 실패: ${d2.error}`);
     addLog('info', '🎉 전체 완료!');
     loadStats();
   } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
@@ -280,17 +264,16 @@ async function runBoth() {
 
 async function loadStats() {
   try {
-    const SUPABASE_URL = 'https://xlxztrnpmzklbnyfkrze.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_RYLor2fbXqj4aHhSW0vCsw_7ZfP2a58';
     const headers = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'count=exact' };
+    const today = new Date().toISOString().split('T')[0];
     const [r1, r2] = await Promise.all([
-      fetch(SUPABASE_URL + '/rest/v1/comparisons_kr?select=id', { method: 'HEAD', headers }),
-      fetch(SUPABASE_URL + '/rest/v1/comparisons_kr?select=id&election_related=eq.true', { method: 'HEAD', headers })
+      fetch(`${SUPABASE_URL}/rest/v1/news_kr?select=id&created_at=gte.${today}T00:00:00Z`, { method: 'HEAD', headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/polls_kr?select=id`, { method: 'HEAD', headers })
     ]);
     const c1 = parseInt((r1.headers.get('content-range') || '/0').split('/')[1]) || 0;
     const c2 = parseInt((r2.headers.get('content-range') || '/0').split('/')[1]) || 0;
-    document.getElementById('statComparisons').textContent = c1;
-    document.getElementById('statElection').textContent = c2;
+    document.getElementById('statNews').textContent = c1;
+    document.getElementById('statPolls').textContent = c2;
   } catch(e) {}
 }
 </script>
