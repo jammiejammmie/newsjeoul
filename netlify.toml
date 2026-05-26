@@ -4,12 +4,6 @@
 [functions]
   node_bundler = "esbuild"
 
-[functions."fetch-comparisons-kr"]
-  timeout = 30
-
-[functions."fetch-election-kr"]
-  timeout = 30
-
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
 
@@ -26,3 +20,17 @@
 
 [functions."update-elections-evening"]
   schedule = "0 12 * * *"
+
+# 매일 오전 6시 KST = 21:00 UTC (전날)
+[functions."update-youtube"]
+  schedule = "0 21 * * *"
+
+# 타임아웃 설정
+[functions."fetch-comparisons-kr"]
+  timeout = 30
+
+[functions."fetch-election-kr"]
+  timeout = 30
+
+[functions."update-youtube"]
+  timeout = 60

@@ -136,6 +136,22 @@ body{background:#faf8f3;color:#1c1a16;font-family:'Noto Sans KR',sans-serif;min-
       </button>
     </div>
 
+
+    <!-- 유튜브 채널 업데이트 -->
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-icon">📺</div>
+        <div class="action-info">
+          <h3>유튜브 채널 업데이트</h3>
+          <p>보수/진보 채널 최신 영상 정보 수집</p>
+        </div>
+        <div class="action-schedule">매일 오전 6시</div>
+      </div>
+      <button class="run-btn compare" id="runYoutubeBtn" onclick="runYoutube()">
+        <span>▶ 지금 실행</span>
+      </button>
+    </div>
+
     <!-- 로그 -->
     <div class="log-card">
       <div class="log-title">📋 실행 로그</div>
@@ -256,10 +272,31 @@ async function runBoth() {
     const d2 = await r2.json();
     if (r2.ok) addLog('success', `✅ 여론조사: ${d2.saved || 0}건 저장`);
     else addLog('error', `❌ 여론조사 실패: ${d2.error}`);
+    addLog('info', '3초 후 유튜브 업데이트...');
+    await new Promise(r => setTimeout(r, 3000));
+    const r3 = await callFunction('update-youtube');
+    const d3 = await r3.json();
+    if (r3.ok) addLog('success', `✅ 유튜브: ${(d3.updated||[]).length}개 채널`);
     addLog('info', '🎉 전체 완료!');
     loadStats();
   } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
   setLoading(btn, false, '⚡ 전체 실행');
+}
+
+
+async function runYoutube() {
+  const btn = document.getElementById('runYoutubeBtn');
+  setLoading(btn, true);
+  try {
+    const res = await callFunction('update-youtube');
+    const data = await res.json();
+    if (res.status === 401) addLog('error', '❌ 관리자 키가 틀렸습니다');
+    else if (res.ok) {
+      addLog('success', `✅ 유튜브 ${(data.updated||[]).length}개 채널 업데이트`);
+      loadStats();
+    } else addLog('error', `❌ 오류: ${data.error}`);
+  } catch(e) { addLog('error', `❌ 실패: ${e.message}`); }
+  setLoading(btn, false, '▶ 지금 실행');
 }
 
 async function loadStats() {

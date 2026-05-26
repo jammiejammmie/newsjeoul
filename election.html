@@ -236,9 +236,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 <nav class="nav">
   <a class="nav-logo" href="/">⚖️ 뉴스<span class="c">저</span><span class="l">울</span></a>
-  <button class="nav-back" onclick="location.href='/'">← 메인으로</button>
-  <div class="nav-badge" id="navDday">선거 D-?</div>
-  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
+  <div class="nav-links" style="display:flex;gap:2px;margin-left:auto;align-items:center">
+    <a href="/" style="color:var(--muted);text-decoration:none;font-size:11px;padding:5px 8px;border-radius:8px">메인</a>
+    <a href="/election.html" style="color:var(--text);background:var(--card);font-size:11px;padding:5px 8px;border-radius:8px;text-decoration:none">🗳️ 선거</a>
+    <a href="/youtube.html" style="color:var(--muted);text-decoration:none;font-size:11px;padding:5px 8px;border-radius:8px">📺 유튜브</a>
+    <a href="/media101.html" style="color:var(--muted);text-decoration:none;font-size:11px;padding:5px 8px;border-radius:8px">📖 미디어101</a>
+    <div class="nav-badge" id="navDday">선거 D-?</div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
+  </div>
 </nav>
 
 <div class="wrap">
@@ -1011,6 +1016,10 @@ function shareX(){
 }
 function copyUrl(){
   navigator.clipboard.writeText('https://newsjeoul.co.kr/election').then(()=>showToast('🔗 링크 복사됨!'));
+}
+
+function shareKakao() {
+  showToast('카카오 공유는 준비 중이에요');
 }
 function showToast(msg){
   const t=document.getElementById('toast');

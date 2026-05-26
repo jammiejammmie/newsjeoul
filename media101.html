@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미디어101 — 뉴스저울</title>
+<meta name="description" content="한국 주요 언론사 성향 가이드. 조중동, 한경오, 방송사까지 — 어느 언론이 어떤 성향인지 알아보세요.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://newsjeoul.co.kr/media101.html">
+<meta property="og:title" content="미디어101 — 뉴스저울">
+<meta property="og:description" content="한국 주요 언론사 성향 가이드">
+<meta property="og:image" content="https://newsjeoul.co.kr/og-image.png">
+<meta property="og:site_name" content="뉴스저울">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#101010;--card:#141414;--card2:#1a1a1a;
+  --border:#1e1e1e;--border2:#2a2a2a;
+  --con:#e63946;--lib:#2563eb;
+  --con-soft:rgba(230,57,70,.08);--lib-soft:rgba(37,99,235,.08);
+  --gold:#f59e0b;--green:#10b981;--purple:#8b5cf6;
+  --text:#f0f0e8;--text2:#b8b8b0;--muted:#555;--muted2:#333;
+}
+[data-theme="light"]{
+  --bg:#f5f4ef;--bg2:#eeede8;--card:#fff;--card2:#f9f8f4;
+  --border:#e0dfd8;--border2:#ccc;
+  --con:#c0392b;--lib:#1d4ed8;
+  --text:#1a1a14;--text2:#444;--muted:#888;--muted2:#ccc;
+}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;font-size:15px;padding-bottom:80px}
+.nav{background:rgba(8,8,8,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:10px}
+[data-theme="light"] .nav{background:rgba(245,244,239,.96)}
+.nav-logo{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--text);text-decoration:none;flex-shrink:0}
+.nav-logo .c{color:var(--con)}.nav-logo .l{color:var(--lib)}
+.nav-links{display:flex;gap:2px;margin-left:auto;align-items:center}
+.nav-link{color:var(--muted);text-decoration:none;font-size:11px;padding:5px 8px;border-radius:8px;transition:all .15s}
+.nav-link:hover,.nav-link.active{color:var(--text);background:var(--card)}
+.nav-election{background:var(--con);color:#fff !important;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px}
+.theme-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+.hero{padding:28px 0 20px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(20px,3.5vw,34px);line-height:1.35;margin-bottom:8px}
+.hero-sub{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:14px}
+.share-row{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s;color:#fff}
+.share-btn:hover{opacity:.82}
+.share-thread{background:#000;border:1px solid #333}
+.share-x{background:#111;border:1px solid #444}
+.share-copy{background:var(--card);color:var(--text);border:1px solid var(--border2)}
+
+/* SPECTRUM */
+.spectrum-section{margin-bottom:28px}
+.spectrum-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+.spectrum-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px}
+.spectrum-bar{height:40px;border-radius:12px;background:linear-gradient(90deg,var(--lib),#6b7280,var(--con));position:relative;margin-bottom:20px}
+.spectrum-outlet{position:absolute;bottom:-32px;transform:translateX(-50%);text-align:center}
+.spectrum-outlet-name{font-size:10px;font-weight:700;color:var(--text2);white-space:nowrap}
+.spectrum-outlet-dot{width:8px;height:8px;border-radius:50%;margin:0 auto 4px;border:2px solid var(--bg)}
+
+.sec-gap{height:48px}
+
+/* MEDIA CARDS */
+.section-title{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.section-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--con)}
+.section-title.lib::before{background:var(--lib)}
+.section-title.mid::before{background:var(--gold)}
+
+.media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:700px){.media-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.media-grid{grid-template-columns:1fr}}
+
+.media-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:transform .2s}
+.media-card:hover{transform:translateY(-2px)}
+.media-card.con{border-left:3px solid var(--con)}
+.media-card.lib{border-left:3px solid var(--lib)}
+.media-card.mid{border-left:3px solid var(--gold)}
+.media-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.media-lean{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.media-lean.con{color:var(--con)}.media-lean.lib{color:var(--lib)}.media-lean.mid{color:var(--gold)}
+.media-score-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.media-score-label{font-size:10px;color:var(--muted);width:50px;flex-shrink:0}
+.media-score-bar{flex:1;height:5px;background:var(--border2);border-radius:20px;overflow:hidden}
+.media-score-fill{height:100%;border-radius:20px}
+.media-score-fill.con{background:var(--con)}
+.media-score-fill.lib{background:var(--lib)}
+.media-score-fill.mid{background:var(--gold)}
+.media-score-num{font-family:'Bebas Neue',cursive;font-size:16px;width:28px;text-align:right;flex-shrink:0}
+.media-score-num.con{color:var(--con)}.media-score-num.lib{color:var(--lib)}.media-score-num.mid{color:var(--gold)}
+.media-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+
+/* FAQ */
+.faq-section{margin-bottom:28px}
+.faq-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.faq-q{padding:14px 18px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.faq-q:hover{background:var(--card2)}
+.faq-arrow{font-size:12px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.faq-a{padding:0 18px;max-height:0;overflow:hidden;transition:all .3s;font-size:13px;color:var(--text2);line-height:1.8}
+.faq-a.open{padding:0 18px 14px;max-height:300px}
+.faq-arrow.open{transform:rotate(180deg)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);opacity:0;transition:all .25s;z-index:300;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="/">⚖️ 뉴스<span class="c">저</span><span class="l">울</span></a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">메인</a>
+    <a href="/election.html" class="nav-link nav-election">🗳️ 선거</a>
+    <a href="/youtube.html" class="nav-link">📺 유튜브</a>
+    <a href="/media101.html" class="nav-link active">📖 미디어101</a>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">미디어101 — 언론사 성향 가이드</div>
+    <h1 class="hero-title">어느 언론을 읽느냐가<br>세상을 보는 방식을 바꿉니다</h1>
+    <p class="hero-sub">한국 주요 언론사들의 정치적 성향과 특징을 정리했습니다. 편향을 아는 것이 편향에서 자유로워지는 첫 걸음입니다.</p>
+    <div class="share-row">
+      <button class="share-btn share-thread" onclick="sharePage('thread')">스레드 공유</button>
+      <button class="share-btn share-x" onclick="sharePage('x')">𝕏 공유</button>
+      <button class="share-btn share-copy" onclick="sharePage('copy')">🔗 링크 복사</button>
+    </div>
+  </div>
+
+  <!-- SPECTRUM -->
+  <div class="spectrum-section">
+    <div class="spectrum-card">
+      <div class="spectrum-title">📊 한국 언론사 편향 스펙트럼</div>
+      <div class="spectrum-bar">
+        <div class="spectrum-outlet" style="left:12%">
+          <div class="spectrum-outlet-dot" style="background:var(--con)"></div>
+          <div class="spectrum-outlet-name">조선일보</div>
+        </div>
+        <div class="spectrum-outlet" style="left:22%">
+          <div class="spectrum-outlet-dot" style="background:var(--con)"></div>
+          <div class="spectrum-outlet-name">동아일보</div>
+        </div>
+        <div class="spectrum-outlet" style="left:35%">
+          <div class="spectrum-outlet-dot" style="background:var(--gold)"></div>
+          <div class="spectrum-outlet-name">중앙일보</div>
+        </div>
+        <div class="spectrum-outlet" style="left:48%">
+          <div class="spectrum-outlet-dot" style="background:#6b7280"></div>
+          <div class="spectrum-outlet-name">KBS</div>
+        </div>
+        <div class="spectrum-outlet" style="left:62%">
+          <div class="spectrum-outlet-dot" style="background:var(--lib)"></div>
+          <div class="spectrum-outlet-name">JTBC</div>
+        </div>
+        <div class="spectrum-outlet" style="left:75%">
+          <div class="spectrum-outlet-dot" style="background:var(--lib)"></div>
+          <div class="spectrum-outlet-name">한겨레</div>
+        </div>
+        <div class="spectrum-outlet" style="left:88%">
+          <div class="spectrum-outlet-dot" style="background:var(--lib)"></div>
+          <div class="spectrum-outlet-name">경향신문</div>
+        </div>
+      </div>
+      <div class="sec-gap"></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:8px">
+        <span style="color:var(--con)">← 보수</span>
+        <span>중도</span>
+        <span style="color:var(--lib)">진보 →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 보수 언론 -->
+  <div class="section-title">🔴 보수 언론</div>
+  <div class="media-grid">
+    <div class="media-card con">
+      <div class="media-name">조선일보</div>
+      <div class="media-lean con">강보수</div>
+      <div class="media-score-row">
+        <div class="media-score-label">보수 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill con" style="width:88%"></div></div>
+        <div class="media-score-num con">88</div>
+      </div>
+      <div class="media-desc">1920년 창간. 국내 최대 발행부수. 친기업·안보 강조. 보수 진영의 대표 매체로 불린다.</div>
+    </div>
+    <div class="media-card con">
+      <div class="media-name">동아일보</div>
+      <div class="media-lean con">보수</div>
+      <div class="media-score-row">
+        <div class="media-score-label">보수 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill con" style="width:78%"></div></div>
+        <div class="media-score-num con">78</div>
+      </div>
+      <div class="media-desc">1920년 창간. 조선일보와 함께 보수 양대 신문. 최근 세대에선 조선보다 다소 유연한 편.</div>
+    </div>
+    <div class="media-card con">
+      <div class="media-name">TV조선</div>
+      <div class="media-lean con">강보수</div>
+      <div class="media-score-row">
+        <div class="media-score-label">보수 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill con" style="width:85%"></div></div>
+        <div class="media-score-num con">85</div>
+      </div>
+      <div class="media-desc">조선일보 계열 종편. 보수 성향 방송 중 시청률 1위. 정치 토크쇼 위주.</div>
+    </div>
+  </div>
+
+  <!-- 중도 언론 -->
+  <div class="section-title mid">🟡 중도·중도보수 언론</div>
+  <div class="media-grid">
+    <div class="media-card mid">
+      <div class="media-name">중앙일보</div>
+      <div class="media-lean mid">중도보수</div>
+      <div class="media-score-row">
+        <div class="media-score-label">중도 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill mid" style="width:60%"></div></div>
+        <div class="media-score-num mid">60</div>
+      </div>
+      <div class="media-desc">삼성그룹 창업주 설립. 보수 성향이나 비교적 균형적. 디지털 전환에 적극적.</div>
+    </div>
+    <div class="media-card mid">
+      <div class="media-name">KBS</div>
+      <div class="media-lean mid">공영방송</div>
+      <div class="media-score-row">
+        <div class="media-score-label">중도 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill mid" style="width:50%"></div></div>
+        <div class="media-score-num mid">50</div>
+      </div>
+      <div class="media-desc">수신료로 운영되는 공영방송. 정권 따라 논조가 흔들린다는 비판을 받는다.</div>
+    </div>
+    <div class="media-card mid">
+      <div class="media-name">MBC</div>
+      <div class="media-lean mid">중도</div>
+      <div class="media-score-row">
+        <div class="media-score-label">중도 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill mid" style="width:45%"></div></div>
+        <div class="media-score-num mid">45</div>
+      </div>
+      <div class="media-desc">공영방송. 탐사보도로 유명. 정권에 따라 성향이 달라진다는 평가.</div>
+    </div>
+  </div>
+
+  <!-- 진보 언론 -->
+  <div class="section-title lib">🔵 진보 언론</div>
+  <div class="media-grid">
+    <div class="media-card lib">
+      <div class="media-name">한겨레</div>
+      <div class="media-lean lib">진보</div>
+      <div class="media-score-row">
+        <div class="media-score-label">진보 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill lib" style="width:80%"></div></div>
+        <div class="media-score-num lib">80</div>
+      </div>
+      <div class="media-desc">1988년 국민주 모아 창간. 노동·인권·환경 이슈에 집중. 진보 진영의 대표 신문.</div>
+    </div>
+    <div class="media-card lib">
+      <div class="media-name">경향신문</div>
+      <div class="media-lean lib">진보</div>
+      <div class="media-score-row">
+        <div class="media-score-label">진보 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill lib" style="width:74%"></div></div>
+        <div class="media-score-num lib">74</div>
+      </div>
+      <div class="media-desc">1946년 창간. 한겨레와 함께 진보 양대 신문. 사회·노동 이슈 중점 보도.</div>
+    </div>
+    <div class="media-card lib">
+      <div class="media-name">JTBC</div>
+      <div class="media-lean lib">진보 성향</div>
+      <div class="media-score-row">
+        <div class="media-score-label">진보 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill lib" style="width:65%"></div></div>
+        <div class="media-score-num lib">65</div>
+      </div>
+      <div class="media-desc">중앙일보 계열이나 방송은 진보 성향. 손석희 앵커 이후 신뢰도 높아짐.</div>
+    </div>
+    <div class="media-card lib">
+      <div class="media-name">오마이뉴스</div>
+      <div class="media-lean lib">강진보</div>
+      <div class="media-score-row">
+        <div class="media-score-label">진보 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill lib" style="width:85%"></div></div>
+        <div class="media-score-num lib">85</div>
+      </div>
+      <div class="media-desc">시민기자 모델로 2000년 창간. 진보·시민운동 지향. "모든 시민은 기자다."</div>
+    </div>
+    <div class="media-card lib">
+      <div class="media-name">뉴스타파</div>
+      <div class="media-lean lib">탐사·진보</div>
+      <div class="media-score-row">
+        <div class="media-score-label">진보 성향</div>
+        <div class="media-score-bar"><div class="media-score-fill lib" style="width:70%"></div></div>
+        <div class="media-score-num lib">70</div>
+      </div>
+      <div class="media-desc">후원금으로 운영되는 탐사보도 매체. 권력 비리 추적으로 신뢰도 높음.</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="section-title" style="margin-bottom:14px">❓ 자주 묻는 질문</div>
+
+    <div class="faq-card">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        보수·진보 언론 중 어느 쪽이 더 신뢰할 만한가요?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">뉴스저울의 답은 "둘 다 읽어야 한다"입니다. 어느 한쪽만 읽으면 세상의 절반만 보게 됩니다. 보수 언론이 강조하는 것과 진보 언론이 강조하는 것이 다를 뿐, 둘 다 사실에 기반하는 경우가 많습니다. 중요한 건 어느 부분을 강조하고 어느 부분을 빠뜨렸는지를 파악하는 능력입니다.</div>
+    </div>
+
+    <div class="faq-card">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        편향 점수는 어떻게 계산하나요?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">뉴스저울의 편향 점수는 AI가 최근 30일 기사의 논조, 단어 선택, 강조점을 분석해 산출합니다. 0점은 완전 진보, 100점은 완전 보수, 50점은 중립입니다. 절대적인 수치가 아니라 상대적인 비교를 위한 지표입니다.</div>
+    </div>
+
+    <div class="faq-card">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        중립 언론은 없나요?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">완전한 중립 언론은 없습니다. 어떤 기사를 쓸지 선택하는 것 자체가 편집 결정이고, 거기에 가치관이 반영됩니다. KBS나 연합뉴스가 상대적으로 중립에 가깝다는 평가를 받지만, 이들도 완전하지 않습니다. 중요한 건 여러 시각을 종합적으로 보는 것입니다.</div>
+    </div>
+
+    <div class="faq-card">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        뉴스저울은 어떤 성향인가요?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">뉴스저울은 어떤 정치적 입장도 지지하지 않습니다. 보수가 맞다, 진보가 맞다를 판단하지 않고, 두 시각이 어떻게 다른지를 보여주는 것이 목적입니다. 독자 스스로 판단하도록 돕는 것이 뉴스저울의 역할입니다.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('nj_theme',next);
+  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
+}
+const saved=localStorage.getItem('nj_theme')||'dark';
+document.documentElement.setAttribute('data-theme',saved);
+document.getElementById('themeBtn').textContent=saved==='dark'?'☀️':'🌙';
+
+function toggleFaq(el){
+  const a=el.nextElementSibling;
+  const arrow=el.querySelector('.faq-arrow');
+  a.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function sharePage(type){
+  const url='https://newsjeoul.co.kr/media101.html';
+  const text='어느 언론을 읽느냐가 세상을 보는 방식을 바꿉니다. 한국 언론사 성향 가이드 → 뉴스저울';
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(text+'\n'+url),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');
+  else { navigator.clipboard.writeText(url).then(()=>showToast('🔗 링크 복사됨!')); }
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>

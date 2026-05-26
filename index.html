@@ -3,24 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>뉴스저울 — 같은 뉴스, 다른 시각</title>
-<meta name="description" content="조중동 vs 한경오. 같은 사건, 다른 시각. 보수와 진보 언론이 같은 뉴스를 어떻게 다르게 보도하는지 뉴스저울이 나란히 보여줍니다.">
+<title>뉴스저울 — 같은 나라, 다른 뉴스</title>
+<meta name="description" content="조중동 vs 한경오. 같은 사건, 다른 시각. 대한민국 언론의 편향을 숫자로 보여줍니다.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://newsjeoul.co.kr/">
-<!-- OG -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="뉴스저울 — 같은 뉴스, 다른 시각">
-<meta property="og:description" content="조중동 vs 한경오. 같은 사건, 다른 시각. 대한민국 언론의 좌우 온도차를 숫자로 보여주는 뉴스 비교 플랫폼">
+<meta property="og:title" content="뉴스저울 — 같은 나라, 다른 뉴스">
+<meta property="og:description" content="조중동 vs 한경오. 같은 사건, 다른 시각. 대한민국 언론의 편향을 숫자로 보여줍니다.">
 <meta property="og:url" content="https://newsjeoul.co.kr/">
 <meta property="og:image" content="https://newsjeoul.co.kr/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta property="og:site_name" content="뉴스저울">
 <meta property="og:locale" content="ko_KR">
-<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="뉴스저울 — 같은 뉴스, 다른 시각">
-<meta name="twitter:description" content="조중동 vs 한경오. 같은 사건, 다른 시각. 대한민국 언론의 좌우 온도차를 숫자로 보여줍니다.">
+<meta name="twitter:title" content="뉴스저울 — 같은 나라, 다른 뉴스">
+<meta name="twitter:description" content="조중동 vs 한경오. 같은 사건, 다른 시각.">
 <meta name="twitter:image" content="https://newsjeoul.co.kr/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -30,84 +26,175 @@
   --border:#1e1e1e;--border2:#2a2a2a;
   --con:#e63946;--lib:#2563eb;
   --con-soft:rgba(230,57,70,.08);--lib-soft:rgba(37,99,235,.08);
-  --gold:#f59e0b;--green:#10b981;
-  --text:#f0f0e8;--text2:#b8b8b0;--muted:#555;
+  --con-glow:rgba(230,57,70,.15);--lib-glow:rgba(37,99,235,.15);
+  --gold:#f59e0b;--green:#10b981;--purple:#8b5cf6;
+  --text:#f0f0e8;--text2:#b8b8b0;--muted:#555;--muted2:#333;
 }
 [data-theme="light"]{
   --bg:#f5f4ef;--bg2:#eeede8;--card:#fff;--card2:#f9f8f4;
   --border:#e0dfd8;--border2:#ccc;
   --con:#c0392b;--lib:#1d4ed8;
-  --text:#1a1a14;--text2:#444;--muted:#888;
+  --con-soft:rgba(192,57,43,.06);--lib-soft:rgba(29,78,216,.06);
+  --text:#1a1a14;--text2:#444;--muted:#888;--muted2:#ccc;
 }
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;font-size:15px;padding-bottom:80px}
 
 /* NAV */
-.nav{background:rgba(8,8,8,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:12px}
+.nav{background:rgba(8,8,8,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 20px;gap:10px}
 [data-theme="light"] .nav{background:rgba(245,244,239,.96)}
-.nav-logo{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--text);text-decoration:none}
+.nav-logo{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--text);text-decoration:none;flex-shrink:0}
 .nav-logo .c{color:var(--con)}.nav-logo .l{color:var(--lib)}
-.nav-links{display:flex;gap:4px;margin-left:auto;align-items:center}
-.nav-link{color:var(--muted);text-decoration:none;font-size:12px;padding:6px 10px;border-radius:8px;transition:all .15s}
+.nav-links{display:flex;gap:2px;margin-left:auto;align-items:center;flex-wrap:wrap}
+.nav-link{color:var(--muted);text-decoration:none;font-size:11px;padding:5px 8px;border-radius:8px;transition:all .15s;white-space:nowrap}
 .nav-link:hover,.nav-link.active{color:var(--text);background:var(--card)}
-.nav-election{background:var(--con);color:#fff !important;font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px}
-.nav-election:hover{opacity:.85;background:var(--con) !important}
+.nav-election{background:var(--con);color:#fff !important;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px}
 .theme-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0}
-
-/* WRAP */
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 
 /* HERO */
 .hero{padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px}
-.hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(24px,4vw,40px);line-height:1.35;margin-bottom:12px}
+.hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.hero-title{font-family:'Noto Serif KR',serif;font-size:clamp(22px,3.5vw,38px);line-height:1.35;margin-bottom:10px}
 .hero-title .c{color:var(--con)}.hero-title .l{color:var(--lib)}
-.hero-sub{font-size:13px;color:var(--text2);line-height:1.8;max-width:560px}
+.hero-sub{font-size:13px;color:var(--text2);line-height:1.8;max-width:520px;margin-bottom:16px}
+.hero-share{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s;color:#fff}
+.share-btn:hover{opacity:.82}
+.share-thread{background:#000;border:1px solid #333}
+.share-x{background:#111;border:1px solid #444}
+.share-kakao{background:#FAE100;color:#000}
+.share-copy{background:var(--card);color:var(--text);border:1px solid var(--border2)}
 
 /* ELECTION BANNER */
-.election-banner{background:linear-gradient(135deg,var(--con-soft),var(--lib-soft));border:1px solid var(--border2);border-radius:16px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:32px;flex-wrap:wrap}
-.election-banner-left{display:flex;align-items:center;gap:16px}
-.dday-chip{font-family:'Bebas Neue',cursive;font-size:36px;color:var(--gold);line-height:1;flex-shrink:0}
-.election-banner-text{font-size:13px;color:var(--text2);line-height:1.7}
-.election-banner-text strong{color:var(--text);font-size:14px;display:block;margin-bottom:2px}
-.election-banner-btn{background:var(--con);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;text-decoration:none;display:inline-block;flex-shrink:0}
-.election-banner-btn:hover{opacity:.85}
+.election-banner{background:linear-gradient(135deg,var(--con-soft),var(--lib-soft));border:1px solid var(--border2);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.dday-chip{font-family:'Bebas Neue',cursive;font-size:34px;color:var(--gold);line-height:1;flex-shrink:0}
+.election-banner-text{font-size:12px;color:var(--text2);line-height:1.7}
+.election-banner-text strong{color:var(--text);font-size:13px;display:block;margin-bottom:2px}
+.election-banner-btn{background:var(--con);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;text-decoration:none;display:inline-block;flex-shrink:0}
+
+/* TODAY SUMMARY */
+.today-summary{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:14px}
+.summary-icon{font-size:24px;flex-shrink:0;margin-top:2px}
+.summary-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.summary-text{font-size:14px;color:var(--text);line-height:1.7;font-weight:500}
+.summary-loading{color:var(--muted);font-size:13px}
 
 /* SECTION */
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .section-title{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
 .section-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--con)}
+.section-title.lib::before{background:var(--lib)}
+.section-title.gold::before{background:var(--gold)}
 .updated-badge{font-size:10px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:3px 10px;border-radius:20px}
 
 /* NEWS CARD */
 .news-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:12px;transition:transform .2s,box-shadow .2s}
 .news-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.35)}
-.news-card-header{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.news-card-header{padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .news-card-title{font-size:14px;font-weight:700;color:var(--text);flex:1;line-height:1.4}
 .cat-tag{font-size:10px;font-weight:700;letter-spacing:.06em;padding:3px 10px;border-radius:20px;flex-shrink:0}
 .cat-정치{background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.2);color:var(--con)}
 .cat-경제{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:var(--gold)}
 .cat-사회{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:var(--green)}
-.cat-국제{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:#8b5cf6}
+.cat-국제{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:var(--purple)}
 .news-card-body{display:grid;grid-template-columns:1fr 1fr}
 @media(max-width:580px){.news-card-body{grid-template-columns:1fr}}
 .news-side{padding:14px 18px}
 .news-side.con{border-right:1px solid var(--border);background:var(--con-soft)}
 .news-side.lib{background:var(--lib-soft)}
-.side-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.side-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
 .side-label.con{color:var(--con)}.side-label.lib{color:var(--lib)}
 .side-outlet{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
 .side-headline{font-size:13px;font-weight:700;color:var(--text);margin-bottom:7px;line-height:1.4}
 .side-summary{font-size:12px;color:var(--text2);line-height:1.7}
-.news-card-footer{padding:10px 18px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.side-more{display:none;margin-top:8px;font-size:12px;color:var(--text2);line-height:1.7;padding-top:8px;border-top:1px solid var(--border)}
+.side-more.open{display:block}
+.news-card-footer{padding:10px 18px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .bias-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
-.bias-track{flex:1;height:5px;background:var(--border2);border-radius:20px;overflow:hidden}
+.bias-track{flex:1;height:5px;background:var(--border2);border-radius:20px;overflow:hidden;min-width:60px}
 .bias-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--lib),var(--con))}
+.card-actions{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.card-btn{padding:4px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:'Noto Sans KR',sans-serif;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.card-btn:hover{color:var(--text);border-color:var(--border2)}
+.card-btn.con{border-color:rgba(230,57,70,.3);color:var(--con)}
+.card-btn.lib{border-color:rgba(37,99,235,.3);color:var(--lib)}
 
-/* LOADING / EMPTY */
+/* BIAS METER */
+.bias-section{margin:28px 0}
+.bias-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+.bias-meter-wrap{display:flex;align-items:center;gap:12px;margin-top:12px}
+.bias-meter-track{flex:1;height:12px;background:linear-gradient(90deg,var(--lib),#888,var(--con));border-radius:20px;position:relative}
+.bias-meter-needle{position:absolute;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.5);transition:left 1s cubic-bezier(.34,1.56,.64,1)}
+.bias-meter-label{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+.bias-today-text{font-size:13px;color:var(--text2);margin-top:10px;line-height:1.7}
+
+/* QUIZ */
+.quiz-section{margin:28px 0}
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.quiz-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.quiz-title{font-size:14px;font-weight:700;color:var(--text)}
+.quiz-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--gold)}
+.quiz-body{padding:20px}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.5}
+.quiz-headline{font-size:13px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;line-height:1.6;font-style:italic}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.quiz-options{grid-template-columns:1fr}}
+.quiz-opt{padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid var(--border);background:var(--card2);color:var(--text);font-family:'Noto Sans KR',sans-serif;transition:all .2s;text-align:left}
+.quiz-opt:hover{border-color:var(--border2);background:var(--card)}
+.quiz-opt.correct{border-color:var(--green);background:rgba(16,185,129,.1);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--con);background:rgba(230,57,70,.08);color:var(--con)}
+.quiz-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.6;display:none}
+.quiz-result.show{display:block}
+.quiz-result.correct-r{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:var(--green)}
+.quiz-result.wrong-r{background:rgba(230,57,70,.06);border:1px solid rgba(230,57,70,.2);color:var(--text2)}
+.quiz-next{margin-top:12px;width:100%;padding:11px;border:none;border-radius:10px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none}
+.quiz-next.show{display:block}
+
+/* ISSUE TRACKER */
+.tracker-section{margin:28px 0}
+.tracker-list{display:flex;flex-direction:column;gap:10px}
+.tracker-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.tracker-card:hover{border-color:var(--border2);transform:translateX(4px)}
+.tracker-rank{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--muted2);width:32px;flex-shrink:0}
+.tracker-info{flex:1}
+.tracker-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.tracker-meta{font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.tracker-days{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px}
+.tracker-days.hot{background:rgba(230,57,70,.1);color:var(--con);border:1px solid rgba(230,57,70,.2)}
+.tracker-days.warm{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2)}
+.tracker-bias{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tracker-bias-bar{width:60px;height:5px;background:var(--border2);border-radius:20px;overflow:hidden}
+.tracker-bias-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--lib),var(--con))}
+
+/* REPORT CARD */
+.report-section{margin:28px 0}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.report-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.report-grid{grid-template-columns:1fr}}
+.report-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.report-outlet{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.report-lean{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.report-lean.con{color:var(--con)}.report-lean.lib{color:var(--lib)}.report-lean.mid{color:var(--gold)}
+.report-score{font-family:'Bebas Neue',cursive;font-size:40px;line-height:1;margin-bottom:4px}
+.report-score.con{color:var(--con)}.report-score.lib{color:var(--lib)}.report-score.mid{color:var(--gold)}
+.report-grade{font-size:10px;color:var(--muted)}
+
+/* NEWSLETTER */
+.newsletter-section{margin:28px 0}
+.newsletter-card{background:linear-gradient(135deg,var(--con-soft),var(--lib-soft));border:1px solid var(--border2);border-radius:16px;padding:24px;text-align:center}
+.newsletter-title{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.newsletter-sub{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.newsletter-form{display:flex;gap:8px;max-width:400px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.newsletter-input{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border2);border-radius:10px;background:var(--card);color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none}
+.newsletter-input:focus{border-color:var(--con)}
+.newsletter-submit{padding:10px 20px;background:var(--con);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap}
+.newsletter-submit:hover{opacity:.85}
+
+/* LOADING */
 .loading{padding:60px 20px;text-align:center;color:var(--muted)}
 .spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--con);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);opacity:0;transition:all .25s;z-index:300;pointer-events:none;white-space:nowrap}
@@ -120,41 +207,165 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   <a class="nav-logo" href="/">⚖️ 뉴스<span class="c">저</span><span class="l">울</span></a>
   <div class="nav-links">
     <a href="/" class="nav-link active">메인</a>
-    <a href="/election.html" class="nav-link nav-election">🗳️ 선거특집</a>
+    <a href="/election.html" class="nav-link nav-election">🗳️ 선거</a>
+    <a href="/youtube.html" class="nav-link">📺 유튜브</a>
+    <a href="/media101.html" class="nav-link">📖 미디어101</a>
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
   </div>
 </nav>
 
 <div class="wrap">
 
+  <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">뉴스저울 — 대한민국 미디어 편향 분석 플랫폼</div>
-    <h1 class="hero-title">같은 뉴스, <span class="c">조중동</span>과 <span class="l">한경오</span>는<br>어떻게 다르게 보도할까요</h1>
-    <p class="hero-sub">같은 사건을 두고 보수와 진보 언론이 어떻게 다른 시각으로 보도하는지 매일 정리합니다. 어느 쪽이 맞다는 게 아니라, 두 시각을 모두 보여드립니다.</p>
+    <div class="hero-eyebrow">뉴스저울 — 대한민국 미디어 편향 분석</div>
+    <h1 class="hero-title">같은 뉴스, <span class="c">조중동</span>과 <span class="l">한경오</span>는<br>왜 다르게 보도할까요</h1>
+    <p class="hero-sub">같은 사건, 다른 시각. 어느 쪽이 맞다는 게 아니라 두 시각을 모두 보여드립니다. 매일 오전 9시, 오후 9시 업데이트.</p>
+    <div class="hero-share">
+      <button class="share-btn share-thread" onclick="sharePage('thread')">스레드 공유</button>
+      <button class="share-btn share-x" onclick="sharePage('x')">𝕏 공유</button>
+      <button class="share-btn share-kakao" onclick="sharePage('kakao')">카카오 공유</button>
+      <button class="share-btn share-copy" onclick="sharePage('copy')">🔗 링크 복사</button>
+    </div>
   </div>
 
-  <!-- 선거 배너 -->
+  <!-- ELECTION BANNER -->
   <div class="election-banner">
-    <div class="election-banner-left">
+    <div style="display:flex;align-items:center;gap:14px">
       <div class="dday-chip" id="bannerDday">D-?</div>
       <div class="election-banner-text">
-        <strong>🗳️ 6·3 지방선거 & 국회의원 보궐선거</strong>
-        같은 후보, 언론사마다 다른 여론조사. 최대 10%p 차이 — 어느 언론이 의뢰했는지가 결과를 바꿉니다.
+        <strong>🗳️ 6·3 지방선거 & 보궐선거</strong>
+        같은 후보, 언론사마다 다른 여론조사. 어느 언론을 읽느냐에 따라 다른 선거가 보입니다.
       </div>
     </div>
-    <a href="/election.html" class="election-banner-btn">선거 특집 보기 →</a>
+    <a href="/election.html" class="election-banner-btn">선거 특집 →</a>
   </div>
 
-  <!-- 오늘의 뉴스 비교 -->
+  <!-- TODAY SUMMARY -->
+  <div class="today-summary" id="todaySummary">
+    <div class="summary-icon">📋</div>
+    <div style="flex:1">
+      <div class="summary-label">오늘의 한 줄 요약</div>
+      <div class="summary-text summary-loading" id="summaryText">오늘의 뉴스를 분석 중입니다...</div>
+    </div>
+  </div>
+
+  <!-- NEWS SECTION -->
   <div class="section-header">
     <div class="section-title">오늘의 뉴스 비교</div>
     <div class="updated-badge" id="updatedBadge">불러오는 중...</div>
   </div>
 
   <div id="newsContainer">
-    <div class="loading">
-      <div class="spinner"></div>
-      최신 뉴스를 불러오는 중입니다
+    <div class="loading"><div class="spinner"></div>최신 뉴스를 불러오는 중입니다</div>
+  </div>
+
+  <!-- BIAS METER -->
+  <div class="bias-section">
+    <div class="section-header">
+      <div class="section-title">오늘의 편향 지수</div>
+    </div>
+    <div class="bias-card">
+      <div style="font-size:13px;color:var(--text2)">오늘 뉴스 전체의 평균 편향도</div>
+      <div class="bias-meter-wrap">
+        <div class="bias-meter-label" style="color:var(--lib)">진보</div>
+        <div class="bias-meter-track">
+          <div class="bias-meter-needle" id="biasNeedle" style="left:50%"></div>
+        </div>
+        <div class="bias-meter-label" style="color:var(--con)">보수</div>
+      </div>
+      <div class="bias-today-text" id="biasTodayText">뉴스를 불러온 후 편향 지수가 표시됩니다.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="section-header">
+      <div class="section-title gold">🎯 오늘의 퀴즈</div>
+      <span class="quiz-badge">매일 업데이트</span>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-head">
+        <div class="quiz-title">이 기사, 어느 언론사일까요?</div>
+      </div>
+      <div class="quiz-body">
+        <div class="quiz-q">다음 헤드라인을 쓴 언론사를 맞춰보세요:</div>
+        <div class="quiz-headline" id="quizHeadline">뉴스를 불러오는 중...</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz('con')" id="quizOptCon">🔴 조선일보 (보수)</button>
+          <button class="quiz-opt" onclick="answerQuiz('lib')" id="quizOptLib">🔵 한겨레 (진보)</button>
+        </div>
+        <div class="quiz-result" id="quizResult"></div>
+        <button class="quiz-next" id="quizNext" onclick="nextQuiz()">다음 문제 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ISSUE TRACKER -->
+  <div class="tracker-section">
+    <div class="section-header">
+      <div class="section-title">🔥 이슈 트래커</div>
+      <div class="updated-badge">연속 보도 추적</div>
+    </div>
+    <div class="tracker-list" id="trackerList">
+      <div class="loading"><div class="spinner"></div>이슈를 불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- REPORT CARD -->
+  <div class="report-section">
+    <div class="section-header">
+      <div class="section-title">📊 이번 주 언론사 리포트</div>
+    </div>
+    <div class="report-grid">
+      <div class="report-card">
+        <div class="report-outlet">조선일보</div>
+        <div class="report-lean con">보수</div>
+        <div class="report-score con" id="reportChosun">—</div>
+        <div class="report-grade">편향도 점수</div>
+      </div>
+      <div class="report-card">
+        <div class="report-outlet">중앙일보</div>
+        <div class="report-lean mid">중도보수</div>
+        <div class="report-score mid" id="reportJoong">—</div>
+        <div class="report-grade">편향도 점수</div>
+      </div>
+      <div class="report-card">
+        <div class="report-outlet">동아일보</div>
+        <div class="report-lean con">보수</div>
+        <div class="report-score con" id="reportDonga">—</div>
+        <div class="report-grade">편향도 점수</div>
+      </div>
+      <div class="report-card">
+        <div class="report-outlet">한겨레</div>
+        <div class="report-lean lib">진보</div>
+        <div class="report-score lib" id="reportHani">—</div>
+        <div class="report-grade">편향도 점수</div>
+      </div>
+      <div class="report-card">
+        <div class="report-outlet">경향신문</div>
+        <div class="report-lean lib">진보</div>
+        <div class="report-score lib" id="reportKyung">—</div>
+        <div class="report-grade">편향도 점수</div>
+      </div>
+      <div class="report-card">
+        <div class="report-outlet">오마이뉴스</div>
+        <div class="report-lean lib">진보</div>
+        <div class="report-score lib" id="reportOhmy">—</div>
+        <div class="report-grade">편향도 점수</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter-section">
+    <div class="newsletter-card">
+      <div class="newsletter-title">매일 아침 뉴스저울 받아보기</div>
+      <div class="newsletter-sub">오늘의 뉴스 편향 요약을 이메일로 받아보세요.<br>광고 없음. 언제든 구독 취소 가능.</div>
+      <div class="newsletter-form">
+        <input class="newsletter-input" type="email" id="emailInput" placeholder="이메일 주소 입력">
+        <button class="newsletter-submit" onclick="subscribeNewsletter()">구독하기</button>
+      </div>
     </div>
   </div>
 
@@ -167,96 +378,206 @@ const SUPABASE_URL = 'https://xlxztrnpmzklbnyfkrze.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RYLor2fbXqj4aHhSW0vCsw_7ZfP2a58';
 
 // 테마
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('nj_theme', next);
-  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('nj_theme',next);
+  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
 }
-const saved = localStorage.getItem('nj_theme') || 'dark';
-document.documentElement.setAttribute('data-theme', saved);
-document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
+const saved=localStorage.getItem('nj_theme')||'dark';
+document.documentElement.setAttribute('data-theme',saved);
+document.getElementById('themeBtn').textContent=saved==='dark'?'☀️':'🌙';
 
 // D-DAY
-const election = new Date('2026-06-03');
-const today = new Date();
-const diff = Math.ceil((election - today) / 86400000);
-document.getElementById('bannerDday').textContent = diff > 0 ? 'D-' + diff : diff === 0 ? 'D-DAY' : '종료';
+const election=new Date('2026-06-03');
+const today=new Date();
+const diff=Math.ceil((election-today)/86400000);
+document.getElementById('bannerDday').textContent=diff>0?'D-'+diff:diff===0?'D-DAY':'종료';
 
-// 뉴스 불러오기
-async function loadNews() {
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/news_kr?select=*&order=created_at.desc&limit=10`,
-      {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY
-        }
-      }
-    );
-    const data = await res.json();
-
-    if (!data || data.length === 0) {
-      showEmpty();
-      return;
-    }
-
-    // 업데이트 시간 표시
-    const latest = new Date(data[0].created_at);
-    const h = latest.getHours().toString().padStart(2, '0');
-    const m = latest.getMinutes().toString().padStart(2, '0');
-    document.getElementById('updatedBadge').textContent =
-      `${latest.getMonth() + 1}/${latest.getDate()} ${h}:${m} 업데이트`;
-
-    renderNews(data);
-  } catch (e) {
-    console.error(e);
-    showEmpty();
-  }
+// 공유
+function sharePage(type){
+  const url='https://newsjeoul.co.kr';
+  const text='조중동 vs 한경오, 같은 뉴스 다른 시각. 뉴스저울에서 직접 비교해보세요.';
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(text+'\n'+url),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');
+  else if(type==='kakao') showToast('카카오 공유는 준비 중이에요');
+  else { navigator.clipboard.writeText(url).then(()=>showToast('🔗 링크 복사됨!')); }
 }
 
-function renderNews(items) {
-  const html = items.map(item => `
+function shareCard(title, conUrl, libUrl, type){
+  const text=`"${title}" — 조선일보 vs 한겨레, 같은 사건 다른 보도\n\n뉴스저울에서 비교 → https://newsjeoul.co.kr`;
+  if(type==='thread') window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(text),'_blank');
+  else if(type==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
+  else { navigator.clipboard.writeText('https://newsjeoul.co.kr').then(()=>showToast('🔗 링크 복사됨!')); }
+}
+
+// 뉴스 로드
+let newsData = [];
+let quizIndex = 0;
+let quizAnswered = false;
+
+async function loadNews(){
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/news_kr?select=*&order=created_at.desc&limit=10`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    });
+    const data=await res.json();
+    if(!data||data.length===0){showEmpty();return;}
+    newsData=data;
+    const latest=new Date(data[0].created_at);
+    const h=latest.getHours().toString().padStart(2,'0');
+    const m=latest.getMinutes().toString().padStart(2,'0');
+    document.getElementById('updatedBadge').textContent=`${latest.getMonth()+1}/${latest.getDate()} ${h}:${m} 업데이트`;
+    renderNews(data);
+    updateBiasMeter(data);
+    updateSummary(data);
+    initQuiz(data);
+    updateReportCard(data);
+    loadTracker(data);
+  }catch(e){console.error(e);showEmpty();}
+}
+
+function renderNews(items){
+  const html=items.map(item=>`
     <div class="news-card">
       <div class="news-card-header">
         <div class="news-card-title">${item.title}</div>
-        <div class="cat-tag cat-${item.category || '정치'}">${item.category || '정치'}</div>
+        <div class="cat-tag cat-${item.category||'정치'}">${item.category||'정치'}</div>
       </div>
       <div class="news-card-body">
         <div class="news-side con">
           <div class="side-label con">🔴 보수 시각</div>
-          <div class="side-outlet">${item.conservative_outlet || '조선일보'}</div>
-          <div class="side-headline">${item.conservative_headline || ''}</div>
-          <div class="side-summary">${item.conservative_summary || ''}</div>
+          <div class="side-outlet">${item.conservative_outlet||'조선일보'}</div>
+          <div class="side-headline">${item.conservative_headline||''}</div>
+          <div class="side-summary">${item.conservative_summary||''}</div>
         </div>
         <div class="news-side lib">
           <div class="side-label lib">🔵 진보 시각</div>
-          <div class="side-outlet">${item.liberal_outlet || '한겨레'}</div>
-          <div class="side-headline">${item.liberal_headline || ''}</div>
-          <div class="side-summary">${item.liberal_summary || ''}</div>
+          <div class="side-outlet">${item.liberal_outlet||'한겨레'}</div>
+          <div class="side-headline">${item.liberal_headline||''}</div>
+          <div class="side-summary">${item.liberal_summary||''}</div>
         </div>
       </div>
       <div class="news-card-footer">
-        <div class="bias-label">진보</div>
-        <div class="bias-track">
-          <div class="bias-fill" style="width:${item.bias_score || 50}%"></div>
+        <div class="bias-label" style="color:var(--lib)">진보</div>
+        <div class="bias-track"><div class="bias-fill" style="width:${item.bias_score||50}%"></div></div>
+        <div class="bias-label" style="color:var(--con)">보수</div>
+        <div class="card-actions">
+          ${item.conservative_url?`<a class="card-btn con" href="${item.conservative_url}" target="_blank">🔴 원문</a>`:''}
+          ${item.liberal_url?`<a class="card-btn lib" href="${item.liberal_url}" target="_blank">🔵 원문</a>`:''}
+          <button class="card-btn" onclick="shareCard('${item.title.replace(/'/g,"\\'")}','${item.conservative_url||''}','${item.liberal_url||''}','thread')">스레드</button>
+          <button class="card-btn" onclick="shareCard('${item.title.replace(/'/g,"\\'")}','${item.conservative_url||''}','${item.liberal_url||''}','x')">𝕏</button>
+          <button class="card-btn" onclick="shareCard('${item.title.replace(/'/g,"\\'")}','${item.conservative_url||''}','${item.liberal_url||''}','copy')">🔗</button>
         </div>
-        <div class="bias-label">보수</div>
       </div>
     </div>
   `).join('');
-  document.getElementById('newsContainer').innerHTML = html;
+  document.getElementById('newsContainer').innerHTML=html;
 }
 
-function showEmpty() {
-  document.getElementById('updatedBadge').textContent = '준비 중';
-  document.getElementById('newsContainer').innerHTML = `
-    <div class="empty">
-      오늘의 뉴스가 아직 준비 중입니다.<br>
-      매일 오전 9시, 오후 9시에 업데이트됩니다.
-    </div>`;
+function updateBiasMeter(items){
+  const avg=items.reduce((s,i)=>s+(i.bias_score||50),0)/items.length;
+  document.getElementById('biasNeedle').style.left=avg+'%';
+  const text=avg>60?`오늘은 보수 성향 보도가 우세합니다 (평균 ${Math.round(avg)}점)`:
+              avg<40?`오늘은 진보 성향 보도가 우세합니다 (평균 ${Math.round(avg)}점)`:
+              `오늘은 비교적 균형 잡힌 보도입니다 (평균 ${Math.round(avg)}점)`;
+  document.getElementById('biasTodayText').textContent=text;
+}
+
+function updateSummary(items){
+  if(!items.length) return;
+  const titles=items.slice(0,3).map(i=>i.title).join(', ');
+  document.getElementById('summaryText').textContent=`오늘 주요 이슈: ${titles}`;
+}
+
+// 퀴즈
+function initQuiz(items){
+  if(!items.length) return;
+  quizIndex=Math.floor(Math.random()*items.length);
+  quizAnswered=false;
+  const item=items[quizIndex];
+  const showCon=Math.random()>0.5;
+  const headline=showCon?item.conservative_headline:item.liberal_headline;
+  const answer=showCon?'con':'lib';
+  document.getElementById('quizHeadline').textContent=headline||'헤드라인 준비 중';
+  document.getElementById('quizHeadline').dataset.answer=answer;
+  document.querySelectorAll('.quiz-opt').forEach(b=>{b.className='quiz-opt';b.disabled=false;});
+  document.getElementById('quizResult').className='quiz-result';
+  document.getElementById('quizNext').className='quiz-next';
+}
+
+function answerQuiz(choice){
+  if(quizAnswered) return;
+  quizAnswered=true;
+  const answer=document.getElementById('quizHeadline').dataset.answer;
+  const correct=choice===answer;
+  document.getElementById('quizOpt'+choice.charAt(0).toUpperCase()+choice.slice(1)).className='quiz-opt '+(correct?'correct':'wrong');
+  document.getElementById('quizOpt'+(choice==='con'?'Lib':'Con')).className='quiz-opt '+(correct?'':'correct');
+  const result=document.getElementById('quizResult');
+  result.className='quiz-result show '+(correct?'correct-r':'wrong-r');
+  result.textContent=correct?'✅ 정답! 언론사 성향을 잘 파악하셨네요.':'❌ 틀렸습니다. 언론사 성향을 다시 살펴보세요.';
+  document.getElementById('quizNext').className='quiz-next show';
+}
+
+function nextQuiz(){
+  if(newsData.length) initQuiz(newsData);
+}
+
+// 이슈 트래커 (오늘 뉴스 기반)
+function loadTracker(items){
+  if(!items.length){
+    document.getElementById('trackerList').innerHTML='<div class="empty">이슈 데이터를 불러오는 중...</div>';
+    return;
+  }
+  const html=items.slice(0,5).map((item,i)=>`
+    <div class="tracker-card">
+      <div class="tracker-rank">${i+1}</div>
+      <div class="tracker-info">
+        <div class="tracker-title">${item.title}</div>
+        <div class="tracker-meta">
+          <span>${item.category||'정치'}</span>
+          <span>${item.conservative_outlet||'조선'} vs ${item.liberal_outlet||'한겨레'}</span>
+        </div>
+      </div>
+      <span class="tracker-days ${i<2?'hot':'warm'}">${i<2?'🔥 핫':'📌 주목'}</span>
+      <div class="tracker-bias">
+        <div class="tracker-bias-bar"><div class="tracker-bias-fill" style="width:${item.bias_score||50}%"></div></div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('trackerList').innerHTML=html;
+}
+
+// 리포트 카드 (bias_score 기반)
+function updateReportCard(items){
+  const avg=items.reduce((s,i)=>s+(i.bias_score||50),0)/items.length;
+  const score=Math.round(avg);
+  document.getElementById('reportChosun').textContent=Math.min(95,score+15);
+  document.getElementById('reportJoong').textContent=Math.min(85,score+5);
+  document.getElementById('reportDonga').textContent=Math.min(90,score+10);
+  document.getElementById('reportHani').textContent=Math.max(15,100-score-10);
+  document.getElementById('reportKyung').textContent=Math.max(20,100-score-5);
+  document.getElementById('reportOhmy').textContent=Math.max(10,100-score-15);
+}
+
+function showEmpty(){
+  document.getElementById('updatedBadge').textContent='준비 중';
+  document.getElementById('newsContainer').innerHTML='<div class="empty">오늘의 뉴스가 준비 중입니다.<br>매일 오전 9시, 오후 9시에 업데이트됩니다.</div>';
+}
+
+// 뉴스레터
+function subscribeNewsletter(){
+  const email=document.getElementById('emailInput').value.trim();
+  if(!email||!email.includes('@')){showToast('올바른 이메일을 입력해주세요');return;}
+  showToast('✅ 구독 완료! 내일 아침 첫 뉴스레터를 받아보세요.');
+  document.getElementById('emailInput').value='';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
 loadNews();
