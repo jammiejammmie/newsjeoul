@@ -76,12 +76,15 @@ category는 정치/경제/사회/국제. bias_score는 0~100.`;
   if (!match) throw new Error('JSON 없음: ' + text.substring(0, 200));
   const items = JSON.parse(match[0]);
   
-  // 원문 링크 매핑
-  return items.map(item => ({
-    ...item,
-    conservative_url: conItems[item.conservative_article_num - 1]?.link || null,
-    liberal_url: libItems[item.liberal_article_num - 1]?.link || null,
-  }));
+  // 원문 링크 매핑 후 DB에 불필요한 컬럼 제거
+  return items.map(item => {
+    const { conservative_article_num, liberal_article_num, ...rest } = item;
+    return {
+      ...rest,
+      conservative_url: conItems[conservative_article_num - 1]?.link || null,
+      liberal_url: libItems[liberal_article_num - 1]?.link || null,
+    };
+  });
 }
 
 exports.handler = async function(event) {
